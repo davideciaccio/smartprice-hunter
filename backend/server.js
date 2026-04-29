@@ -5,28 +5,43 @@ const cors = require('cors');
 require('dotenv').config(); // Carica le variabili dal file .env
 
 // Inizializziamo l'app Express
-const app = express();
+const app = express(); //l'app principale
 
-// --- MIDDLEWARE ---
 // Abilita le richieste da altri domini (es. dal nostro frontend Angular)
 app.use(cors());
 // Permette ad Express di "capire" i dati in formato JSON inviati nel body delle richieste
 app.use(express.json());
 
-// --- CONNESSIONE AL DATABASE ---
 // Utilizziamo la stringa di connessione salvata nel file .env
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ Connessione a MongoDB stabilita con successo!'))
-  .catch((err) => console.error('❌ Errore di connessione a MongoDB:', err));
+  .then(() => console.log('Connessione a MongoDB stabilita con successo!'))
+  .catch((err) => console.error('Errore di connessione a MongoDB:', err));
+
+
+
 
 // --- ROTTE DI BASE (Test) ---
 app.get('/', (req, res) => {
   res.send('Benvenuto nell\'API di SmartPrice Hunter!');
 });
 
-// --- AVVIO DEL SERVER ---
+
+
+
+// Importiamo e usiamo le rotte di autenticazione
+// 1. IMPORTI IL MINI-ROUTER
+const authRoutes = require('./routes/auth');
+// 2. LO AGGANCI ALL'APP PRINCIPALE
+// Stai dicendo: "Per tutte le richieste che iniziano con '/api/auth', 
+// delega il lavoro al mini-router 'authRoutes'"
+app.use('/api/auth', authRoutes);
+
+
+
+
+// Funzione listen per mettere il server in ascolto sulla porta 3000
 // Leggiamo la porta dal .env, altrimenti usiamo la 3000 di default
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server in esecuzione sulla porta: ${PORT}`);
+  console.log(`Server in esecuzione sulla porta: ${PORT}`);
 });
