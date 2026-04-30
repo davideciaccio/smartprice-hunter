@@ -16,6 +16,7 @@ const User = require('../models/User'); // Importiamo il modello creato prima
 // Il file sarà agganciato in server.js su /api/auth
 
 // --- 1. ROTTA DI REGISTRAZIONE (POST /api/auth/register) ---
+// Il professore lo fa con il blocco try catch nel controller, e poi il metodo post avrà come secondo argomento il file dove c'è la rotta.
 router.post('/register', async (req, res) => {
   try {
     //const { ... }: Questa sintassi (chiamata destrutturazione) estrae al volo i valori username, email e password dal pacchetto e crea tre variabili pronte all'uso.
@@ -95,7 +96,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { userId: user._id },     // Payload (dati pubblici ma firmati)
       process.env.JWT_SECRET,   // La nostra chiave segreta
-      { expiresIn: '1d' }       // Scadenza del token (1 giorno)
+      { expiresIn: '1h' }       // Scadenza del token (1 giorno)
     );
 
     // Restituiamo il token e i dati base dell'utente al frontend

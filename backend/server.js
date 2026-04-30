@@ -7,9 +7,9 @@ require('dotenv').config(); // Carica le variabili dal file .env
 // Inizializziamo l'app Express
 const app = express(); //l'app principale
 
-// Abilita le richieste da altri domini (es. dal nostro frontend Angular)
+// Abilita le richieste da altri domini, dal nostro frontend Angular
 app.use(cors());
-// Permette ad Express di "capire" i dati in formato JSON inviati nel body delle richieste
+// Permette ad Express di "capire" i dati in formato JSON
 app.use(express.json());
 
 // Utilizziamo la stringa di connessione salvata nel file .env
@@ -20,9 +20,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 
-// --- ROTTE DI BASE (Test) ---
+// --- ROTTA DI BASE ---
 app.get('/', (req, res) => {
-  res.send('Benvenuto nell\'API di SmartPrice Hunter!');
+  res.send('Benvenuto nell\'API dell app');
 });
 
 
@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 // Importiamo e usiamo le rotte di autenticazione
 // 1. IMPORTI IL MINI-ROUTER
 const authRoutes = require('./routes/auth');
+
 // 2. LO AGGANCI ALL'APP PRINCIPALE
 // Stai dicendo: "Per tutte le richieste che iniziano con '/api/auth', 
 // delega il lavoro al mini-router 'authRoutes'"
