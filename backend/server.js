@@ -6,6 +6,8 @@ require('dotenv').config(); // Carica le variabili dal file .env
 
 // Inizializziamo l'app Express
 const app = express(); //l'app principale
+const startPriceMonitor = require('./jobs/priceMonitor');
+
 
 // Abilita le richieste da altri domini, dal nostro frontend Angular
 app.use(cors({
@@ -19,12 +21,17 @@ app.use(express.json());
 
 // Utilizziamo la stringa di connessione salvata nel file .env
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connessione a MongoDB stabilita con successo!'))
-  .catch((err) => console.error('Errore di connessione a MongoDB:', err));
+  .then(() => {
+    console.log('Connessione a MongoDB stabilita con successo!');
+    
+    // Avvia il Cron Job in background SOLO quando il DB è pronto
+    startPriceMonitor(); 
+  })
+  .catch((err) => {
+    console.error('Errore di connessione a MongoDB:', err);
+  });
 
-
-
-
+  
 // --- ROTTA DI BASE ---
 app.get('/', (req, res) => {
   res.send('Benvenuto nell\'API dell app');
