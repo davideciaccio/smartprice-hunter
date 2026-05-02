@@ -1,0 +1,93 @@
+/* Stile della card di ricerca */
+.search-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+  .input-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    --background: #f9f9f9;
+  }
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Stile delle card dei prodotti */
+.product-card {
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Gestione delle immagini per non deformarle */
+.product-image {
+  width: 100%;
+  height: 220px;
+  object-fit: contain; /* L'immagine viene ridimensionata mantenendo le proporzioni */
+  background-color: #ffffff;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.product-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #222;
+  margin-top: 5px;
+  
+  /* Trucco CSS avanzato per troncare il testo esattamente alla seconda riga! */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f4f5f8;
+  border-radius: 8px;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: #555;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.price-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #2dd36f; /* Verde successo di Ionic */
+}
+
+.chart-placeholder {
+  text-align: center;
+  margin-top: 15px;
+  padding: 20px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  color: #888;
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 60px;
+  color: #888;
+  
+  ion-icon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
+}

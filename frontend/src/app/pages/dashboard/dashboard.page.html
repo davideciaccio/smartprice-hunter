@@ -1,13 +1,74 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>SmartPrice Hunter 🎯</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  
+  <!-- 1. SEZIONE DI RICERCA -->
+  <ion-card class="search-card">
+    <ion-card-header>
+      <ion-card-title>Traccia un nuovo prodotto</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none" class="input-item">
+        <!-- [(ngModel)] collega questa casella di testo alla variabile newProductUrl del file .ts -->
+        <ion-input 
+          [(ngModel)]="newProductUrl" 
+          placeholder="Incolla il link del prodotto qui..." 
+          type="url" 
+          clearInput>
+        </ion-input>
+      </ion-item>
+      
+      <!-- Pulsante che lancia lo scraping -->
+      <ion-button expand="block" (click)="startScraping()" [disabled]="isLoading" class="ion-margin-top">
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        {{ isLoading ? 'Analisi in corso...' : 'Inizia a Tracciare' }}
+      </ion-button>
+      
+      <!-- Barra di caricamento visibile solo se isLoading è true -->
+      <ion-progress-bar type="indeterminate" *ngIf="isLoading" color="secondary" class="ion-margin-top"></ion-progress-bar>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- 2. LISTA DEI PRODOTTI -->
+  <h2 class="ion-padding-start section-title" *ngIf="products.length > 0">I tuoi prodotti</h2>
+
+  <!-- *ngFor è il ciclo di Angular: crea una di queste card per ogni prodotto che ci manda il backend -->
+  <ion-card *ngFor="let product of products" class="product-card">
+    
+    <!-- Immagine del prodotto (se lo scraper non la trova, mette un placeholder) -->
+    <img [src]="product.image || 'https://via.placeholder.com/400x300?text=Immagine+non+disponibile'" 
+         alt="Immagine prodotto" 
+         class="product-image" />
+    
+    <ion-card-header>
+      <!-- Mostra solo i primi 30 caratteri del link -->
+      <ion-card-subtitle>{{ product.url | slice:0:30 }}...</ion-card-subtitle>
+      <ion-card-title class="product-title">{{ product.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="price-container">
+        <span class="price-label">Prezzo Attuale:</span>
+        <!-- Filtro 'number' per mostrare il prezzo formattato bene (es: 19,99) -->
+        <span class="price-value">€ {{ product.currentPrice | number:'1.2-2' }}</span>
+      </div>
+      
+      <!-- SPAZIO PER IL FUTURO GRAFICO (Lo aggiungeremo nel prossimo step) -->
+      <div class="chart-placeholder">
+        <p><em>(Area riservata al grafico dell'andamento)</em></p>
+      </div>
+      
+    </ion-card-content>
+  </ion-card>
+
+  <!-- 3. MESSAGGIO DI STATO VUOTO -->
+  <div class="empty-state" *ngIf="products.length === 0 && !isLoading">
+    <ion-icon name="cube-outline"></ion-icon>
+    <p>Non hai ancora tracciato nessun prodotto. Incolla un link qui sopra per iniziare!</p>
+  </div>
+
 </ion-content>
