@@ -84,4 +84,19 @@ const addProduct = async (req, res) => {
     }
 };
 
-module.exports = { addProduct };
+
+// --- CONTROLLER: Recupera tutti i prodotti dell'utente loggato ---
+const getUserProducts = async (req, res) => {
+    try {
+        // Cerca i prodotti filtrando per l'ID utente (preso dal token)
+        // .sort({ createdAt: -1 }) li ordina dal più recente al più vecchio
+        const products = await Product.find({ user: req.user.userId }).sort({ createdAt: -1 });
+        res.json(products);
+    } catch (error) {
+        console.error('Errore nel recupero prodotti:', error);
+        res.status(500).json({ message: 'Errore nel caricamento della dashboard.' });
+    }
+};
+
+// ESPORTIAMO ENTRAMBE LE FUNZIONI!
+module.exports = { addProduct, getUserProducts };

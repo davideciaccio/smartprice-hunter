@@ -43,6 +43,8 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
 
+const productRoutes = require('./routes/products');
+app.use('/api/products', productRoutes);
 
 
 // Funzione listen per mettere il server in ascolto sulla porta 3000
