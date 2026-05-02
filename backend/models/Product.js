@@ -9,13 +9,14 @@ const priceHistorySchema = new mongoose.Schema({
 // Schema principale del Prodotto
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  url: { type: String }, // Il link e-commerce per lo scraping
-  barcode: { type: String }, // Il codice a barre per la scansione mobile
+  url: { type: String, required: true }, 
+  image: { type: String }, // Per l'immagine estratta dal sito, Type String perchè nel db salviamo l'url che punta all'immagine
+  barcode: { type: String },
   currentPrice: { type: Number },
-  priceHistory: [priceHistorySchema], // Un array (lista) di prezzi passati
+  priceHistory: [priceHistorySchema], 
   user: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', // Collega questo prodotto a un Utente specifico
+    ref: 'User', 
     required: true 
   }
 }, { 
