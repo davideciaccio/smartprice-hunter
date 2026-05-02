@@ -8,7 +8,12 @@ require('dotenv').config(); // Carica le variabili dal file .env
 const app = express(); //l'app principale
 
 // Abilita le richieste da altri domini, dal nostro frontend Angular
-app.use(cors());
+app.use(cors({
+  origin: "*", 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Permette ad Express di "capire" i dati in formato JSON
 app.use(express.json());
 
