@@ -1,28 +1,85 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>SmartPrice Hunter</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <div class="d-flex flex-column justify-content-center h-100">
-    <h2 class="text-center mb-4">Bentornato!</h2>
-
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" [(ngModel)]="credentials.email"></ion-input>
-    </ion-item>
-
-    <ion-item class="mb-3">
-      <ion-label position="floating">Password</ion-label>
-      <ion-input type="password" [(ngModel)]="credentials.password"></ion-input>
-    </ion-item>
-
-    <ion-button expand="block" (click)="onLogin()">Accedi</ion-button>
+<ion-content class="x-theme-content">
+  <!-- Wrapper principale: spinge il footer in basso se la pagina è corta -->
+  <div class="x-layout-wrapper">
     
-    <div class="text-center mt-3">
-      <p>Non hai un account?</p>
-      <ion-button fill="clear" (click)="goToRegister()">Registrati ora</ion-button>
+    <div class="x-container">
+      <!-- LATO SINISTRO: Logo Immagine -->
+      <div class="x-logo-section">
+        <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="massive-logo-img" />
+      </div>
+
+      <!-- LATO DESTRO: Form e bottoni -->
+      <div class="x-action-section">
+        <h1 class="main-heading">Scegli. Confronta. Acquista.</h1>
+        <h3 class="sub-heading">Iscriviti a SmartPrice Hunter adesso.</h3>
+
+        <div class="auth-wrapper">
+          
+          <!-- Pulsante Google -->
+          <ion-button expand="block" class="x-btn-white x-pill" mode="md">
+            <img slot="start" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="oauth-icon" alt="Google Logo" />
+            Registrati con Google
+          </ion-button>
+          
+          <!-- Pulsante Apple -->
+          <ion-button expand="block" class="x-btn-white x-pill mb-3" mode="md">
+            <ion-icon 
+              slot="start" 
+              src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/svg/logo-apple.svg" 
+              class="apple-icon">
+            </ion-icon>
+            Iscriviti con Apple
+          </ion-button>
+
+          <!-- Divisore con la "O" -->
+          <div class="divider">
+            <span>O</span>
+          </div>
+
+          <!-- Pulsante Crea account -->
+          <ion-button expand="block" class="x-btn-white x-pill mb-5" mode="md" (click)="goToRegister()">
+            Crea account
+          </ion-button>
+
+          <!-- Sezione Login -->
+          <div class="login-container">
+            <h3 class="login-heading">Hai già un account?</h3>
+
+            <div class="x-form">
+              <ion-input 
+                class="x-input"
+                label="Email" 
+                labelPlacement="floating" 
+                fill="outline" 
+                type="email" 
+                [(ngModel)]="credentials.email">
+              </ion-input>
+
+              <ion-input 
+                class="x-input mt-3"
+                label="Password" 
+                labelPlacement="floating" 
+                fill="outline" 
+                type="password" 
+                [(ngModel)]="credentials.password">
+              </ion-input>
+
+              <!-- Bottone Accedi con i nuovi colori -->
+              <ion-button expand="block" class="x-btn-primary x-pill mt-4" mode="md" (click)="onLogin()">
+                Accedi
+              </ion-button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="x-footer">
+      <nav>
+        <span>© 2026 SmartPrice Hunter</span>
+      </nav>
+    </footer>
+
   </div>
 </ion-content>
