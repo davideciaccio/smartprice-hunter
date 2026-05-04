@@ -21,4 +21,8 @@ router.post('/register', authController.register);
 // Uguale per il login
 router.post('/login', authController.login);
 
+// Rotte Protette
+// Usiamo il metodo DELETE, standard per le rimozioni
+router.delete('/delete', authMiddleware, authController.deleteAccount);
+
 module.exports = router;
