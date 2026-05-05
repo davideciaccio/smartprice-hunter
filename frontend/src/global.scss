@@ -36,3 +36,17 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* ==========================================================================
+   SMARTPRICE HUNTER - CUSTOM GLOBAL VARIABLES
+   ========================================================================== */
+:root {
+  --app-bg-pale-blue: #EFFAFD;
+  --app-text-midnight: #0A1128;
+  --app-white: #FFFFFF;
+  --app-accent-eggplant: #4a235a;
+  --app-border-light: rgba(10, 17, 40, 0.1);
+  --app-success: #2e7d32;
+  --app-warning: #ed6c02;
+  --app-danger: #d32f2f;
+}

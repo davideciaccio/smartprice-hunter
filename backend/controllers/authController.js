@@ -116,5 +116,5 @@ const deleteAccount = async (req, res) => {
     }
 };
 
-// Esportiamo le due funzioni per poterle usare nel file delle rotte
+// Esportiamo le funzioni per poterle usare nel file delle rotte
 module.exports = { register, login, deleteAccount };

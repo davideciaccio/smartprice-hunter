@@ -8,6 +8,9 @@ require('dotenv').config(); // Carica le variabili dal file .env
 const app = express(); //l'app principale
 const startPriceMonitor = require('./jobs/priceMonitor');
 
+// const swaggerAutogen = require('swagger-autogen')();
+// serve oer la documentazione.
+// aggiungi altre 3 linee per dire il path dove generare la documentazione
 
 // Abilita le richieste da altri domini, dal nostro frontend Angular
 app.use(cors({

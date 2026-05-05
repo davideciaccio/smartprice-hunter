@@ -1,74 +1,214 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>SmartPrice Hunter 🎯</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPrice Hunter - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.page.scss">
+</head>
+<body>
 
-<ion-content class="ion-padding">
-  
-  <!-- 1. SEZIONE DI RICERCA -->
-  <ion-card class="search-card">
-    <ion-card-header>
-      <ion-card-title>Traccia un nuovo prodotto</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item lines="none" class="input-item">
-        <!-- [(ngModel)] collega questa casella di testo alla variabile newProductUrl del file .ts -->
-        <ion-input 
-          [(ngModel)]="newProductUrl" 
-          placeholder="Incolla il link del prodotto qui..." 
-          type="url" 
-          clearInput>
-        </ion-input>
-      </ion-item>
-      
-      <!-- Pulsante che lancia lo scraping -->
-      <ion-button expand="block" (click)="startScraping()" [disabled]="isLoading" class="ion-margin-top">
-        <ion-icon name="search-outline" slot="start"></ion-icon>
-        {{ isLoading ? 'Analisi in corso...' : 'Inizia a Tracciare' }}
-      </ion-button>
-      
-      <!-- Barra di caricamento visibile solo se isLoading è true -->
-      <ion-progress-bar type="indeterminate" *ngIf="isLoading" color="secondary" class="ion-margin-top"></ion-progress-bar>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- 2. LISTA DEI PRODOTTI -->
-  <h2 class="ion-padding-start section-title" *ngIf="products.length > 0">I tuoi prodotti</h2>
-
-  <!-- *ngFor è il ciclo di Angular: crea una di queste card per ogni prodotto che ci manda il backend -->
-  <ion-card *ngFor="let product of products" class="product-card">
+  <div class="dashboard-layout">
     
-    <!-- Immagine del prodotto (se lo scraper non la trova, mette un placeholder) -->
-    <img [src]="product.image || 'https://via.placeholder.com/400x300?text=Immagine+non+disponibile'" 
-         alt="Immagine prodotto" 
-         class="product-image" />
-    
-    <ion-card-header>
-      <!-- Mostra solo i primi 30 caratteri del link -->
-      <ion-card-subtitle>{{ product.url | slice:0:30 }}...</ion-card-subtitle>
-      <ion-card-title class="product-title">{{ product.name }}</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <div class="price-container">
-        <span class="price-label">Prezzo Attuale:</span>
-        <!-- Filtro 'number' per mostrare il prezzo formattato bene (es: 19,99) -->
-        <span class="price-value">€ {{ product.currentPrice | number:'1.2-2' }}</span>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" [class.active]="isSidebarActive">
+      <div class="brand">
+        <!-- Inserimento del tuo logo -->
+        <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="sidebar-logo" />
+        
       </div>
       
-      <!-- SPAZIO PER IL FUTURO GRAFICO (Lo aggiungeremo nel prossimo step) -->
-      <div class="chart-placeholder">
-        <p><em>(Area riservata al grafico dell'andamento)</em></p>
-      </div>
-      
-    </ion-card-content>
-  </ion-card>
+      <nav class="nav-menu">
+        <ul>
+          <li class="active">
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+              Sommario
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+              Cambiamenti
+            </a>
+          </li>
+          
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Mappa
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg>
+              Fotocamera
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+              Avvisi
+            </a>
+          </li>
+          
+          <li class="nav-divider"></li>
+          
+          
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              Gestione account
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
 
-  <!-- 3. MESSAGGIO DI STATO VUOTO -->
-  <div class="empty-state" *ngIf="products.length === 0 && !isLoading">
-    <ion-icon name="cube-outline"></ion-icon>
-    <p>Non hai ancora tracciato nessun prodotto. Incolla un link qui sopra per iniziare!</p>
+    <!-- OVERLAY: Ora collegato alla logica di chiusura di Angular -->
+    <div class="sidebar-overlay" [class.active]="isSidebarActive" (click)="closeSidebar()"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- HEADER -->
+      <header class="topbar">
+        <div class="title-area">
+          <!-- Bottone Hamburger perfettamente posizionato a sinistra -->
+          <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
+          
+          <div class="title-text">
+            <h1>Sommario</h1>
+            <p>Here are today's pricing updates!</p>
+          </div>
+        </div>
+        <div class="user-actions">
+          <span class="icon-placeholder">🔔</span>
+          <span class="icon-placeholder">👤</span>
+        </div>
+      </header>
+
+      <!-- KPI CARDS -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <h3>Price Index</h3>
+          <div class="value accent">102.40</div>
+          <p class="trend negative">-0.03 change this week</p>
+        </div>
+        <div class="kpi-card">
+          <h3>Your Products</h3>
+          <div class="value">3,598 <small>products</small></div>
+          <p>873 matches</p>
+        </div>
+        <div class="kpi-card">
+          <h3>Price Changes</h3>
+          <div class="value">15 <small>yesterday</small></div>
+          <p>75 this week</p>
+        </div>
+        <div class="kpi-card">
+          <h3>Price Position</h3>
+          <div class="chart-placeholder">
+            <div class="fake-pie"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEZIONE INSERIMENTO SCRAPING -->
+      <section class="scraping-trigger-section">
+        <div class="scraping-widget">
+          <h3>Aggiungi un nuovo prodotto da monitorare</h3>
+            <div class="input-group">
+            <input type="url" 
+                  id="productUrlInput" 
+                  [(ngModel)]="newProductUrl" 
+                  [disabled]="isLoading"
+                  placeholder="https://www.ecommerce.com/prodotto-da-scrapare..." 
+                  required>
+                  
+            <button class="btn-eggplant" 
+                    id="triggerScrapingBtn" 
+                    (click)="startScraping()" 
+                    [disabled]="isLoading || !newProductUrl">
+              <span *ngIf="!isLoading">Add Product</span>
+              <span *ngIf="isLoading">Scraping... ⏳</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEZIONE TABELLA -->
+      <section class="data-section">
+        <div class="table-header">
+          <h2>Your Product Summary for 24 Jul 2026</h2>
+          <div class="table-controls">
+            <button class="btn-outline">Export Excel</button>
+            <button class="btn-outline">Filters</button>
+            <input type="search" placeholder="Search..." class="search-input">
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="products-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Your Price</th>
+                <th>Min. Competitor Price</th>
+                <th>Avg. Competitor Price</th>
+                <th>Max Competitor Price</th>
+                <th>Price Index</th>
+                <th>Matches</th>
+                <th>Price Position</th>
+              </tr>
+            </thead>
+            
+            <tbody id="productsTableBody">
+              
+              <!-- Caso in cui non ci sono prodotti -->
+              <tr *ngIf="products.length === 0">
+                <td colspan="9" class="empty-state">
+                  Nessun prodotto attualmente monitorato. Aggiungi il tuo primo link qui sopra!
+                </td>
+              </tr>
+
+              <!-- Iterazione sui prodotti salvati nel DB -->
+              <tr *ngFor="let product of products">
+                <td><small style="color: gray;">#{{ product._id | slice:-6 }}</small></td>
+                
+                <td>
+                  <div class="product-cell">
+                    <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb">
+                    <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
+                    
+                    <div class="product-details">
+                      <strong>{{ product.name }}</strong>
+                      <small *ngIf="product.barcode">EAN: {{ product.barcode }}</small>
+                      <small *ngIf="!product.barcode">Nessun Barcode</small>
+                    </div>
+                  </div>
+                </td>
+                
+                <td class="price-highlight">
+                  {{ product.currentPrice ? (product.currentPrice | currency:'EUR') : 'N/D' }}
+                </td>
+                
+                <td><span style="color: gray;">--</span></td>
+                <td><span style="color: gray;">--</span></td>
+                <td><span style="color: gray;">--</span></td>
+                <td><span style="color: gray;">--</span></td>
+                <td><span style="color: gray;">0</span></td>
+                <td><span style="color: gray;">--</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-</ion-content>
+</body>
+</html>

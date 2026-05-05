@@ -12,21 +12,29 @@ import { ProductService } from 'src/app/services/product';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class DashboardPage implements OnInit {
-  newProductUrl: string = ''; // Variabile legata all'input text
-  products: any[] = []; // Array che conterrà i prodotti caricati
-  isLoading: boolean = false; // Per mostrare uno spinner durante lo scraping
+  newProductUrl: string = ''; 
+  products: any[] = []; 
+  isLoading: boolean = false; 
+
+  isSidebarActive: boolean = false; 
 
   constructor(
     private productService: ProductService,
-    private toastController: ToastController // Per i messaggini a comparsa
+    private toastController: ToastController 
   ) {}
 
-  // Questo metodo scatta automaticamente appena si apre la pagina
   ngOnInit() {
     this.loadProducts();
   }
 
-  // 1. Carica i prodotti salvati
+  toggleSidebar() {
+    this.isSidebarActive = !this.isSidebarActive;
+  }
+
+  closeSidebar() {
+    this.isSidebarActive = false;
+  }
+
   loadProducts() {
     this.productService.getUserProducts().subscribe({
       next: (data) => {
@@ -39,21 +47,20 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  // 2. Invia l'URL per lo scraping
   startScraping() {
     if (!this.newProductUrl) {
       this.showToast('Inserisci un URL valido', 'warning');
       return;
     }
 
-    this.isLoading = true; // Mostra "Caricamento in corso..."
+    this.isLoading = true; 
 
     this.productService.addProduct(this.newProductUrl).subscribe({
       next: (res) => {
         this.isLoading = false;
-        this.newProductUrl = ''; // Svuota la barra
+        this.newProductUrl = ''; 
         this.showToast('Prodotto aggiunto con successo!', 'success');
-        this.loadProducts(); // Ricarica la lista per mostrare il nuovo arrivato
+        this.loadProducts(); 
       },
       error: (err) => {
         this.isLoading = false;
@@ -63,7 +70,6 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  // Metodo di utilità per mostrare i bannerini colorati in basso
   async showToast(message: string, color: string) {
     const toast = await this.toastController.create({
       message: message,
