@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importiamo il controller
-const { addProduct, getUserProducts } = require('../controllers/scraperController');
+const { addProduct, getUserProducts, deleteProduct } = require('../controllers/scraperController');
 
 // Importiamo il middleware di sicurezza
 const authMiddleware = require('../middleware/authMiddleware');
@@ -16,5 +16,9 @@ router.post('/add', authMiddleware, addProduct);
 // GET /api/products/ -> Restituisce l'elenco dei prodotti dell'utente
 // rotta protetta da Middleware
 router.get('/', authMiddleware, getUserProducts);
+
+// DELETE /api/products/:id -> Elimina un prodotto specifico
+// Il duepunti (:) indica a Express che "id" è un parametro dinamico (req.params.id)
+router.delete('/:id', authMiddleware, deleteProduct);
 
 module.exports = router;

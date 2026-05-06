@@ -79,4 +79,29 @@ export class DashboardPage implements OnInit {
     });
     toast.present();
   }
+
+  // ==========================================
+  // METODO PER ELIMINARE UN PRODOTTO
+  // ==========================================
+  deleteProduct(productId: string) {
+    // 1. Chiede conferma prima di procedere
+    if (confirm('Sei sicuro di voler smettere di monitorare questo prodotto?')) {
+      
+      // 2. Chiama il backend per eliminarlo dal Database
+      this.productService.deleteProduct(productId).subscribe({
+        next: () => {
+          // 3. Se il db risponde OK, eliminiamo il prodotto dall'array locale
+          // Questo farà sparire la riga dalla tabella istantaneamente senza ricaricare la pagina!
+          this.products = this.products.filter(p => p._id !== productId);
+          
+          // 4. Mostra banner di successo
+          this.showToast('Prodotto eliminato con successo', 'success');
+        },
+        error: (err) => {
+          console.error('Errore durante l\'eliminazione:', err);
+          this.showToast('Errore durante l\'eliminazione del prodotto', 'danger');
+        }
+      });
+    }
+  }
 }

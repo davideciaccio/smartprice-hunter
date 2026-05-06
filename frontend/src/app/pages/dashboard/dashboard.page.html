@@ -10,12 +10,9 @@
 
   <div class="dashboard-layout">
     
-    <!-- SIDEBAR -->
     <aside class="sidebar" [class.active]="isSidebarActive">
       <div class="brand">
-        <!-- Inserimento del tuo logo -->
         <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="sidebar-logo" />
-        
       </div>
       
       <nav class="nav-menu">
@@ -30,6 +27,13 @@
             <a href="#">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
               Cambiamenti
+            </a>
+          </li>
+
+          <li>
+            <a href="#">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z"/></svg>
+              Comparazioni 
             </a>
           </li>
           
@@ -65,16 +69,12 @@
       </nav>
     </aside>
 
-    <!-- OVERLAY: Ora collegato alla logica di chiusura di Angular -->
     <div class="sidebar-overlay" [class.active]="isSidebarActive" (click)="closeSidebar()"></div>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
       
-      <!-- HEADER -->
       <header class="topbar">
         <div class="title-area">
-          <!-- Bottone Hamburger perfettamente posizionato a sinistra -->
           <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
             <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
           </button>
@@ -84,13 +84,8 @@
             <p>Here are today's pricing updates!</p>
           </div>
         </div>
-        <div class="user-actions">
-          <span class="icon-placeholder">🔔</span>
-          <span class="icon-placeholder">👤</span>
-        </div>
       </header>
 
-      <!-- KPI CARDS -->
       <section class="kpi-grid">
         <div class="kpi-card">
           <h3>Price Index</h3>
@@ -115,7 +110,6 @@
         </div>
       </section>
 
-      <!-- SEZIONE INSERIMENTO SCRAPING -->
       <section class="scraping-trigger-section">
         <div class="scraping-widget">
           <h3>Aggiungi un nuovo prodotto da monitorare</h3>
@@ -138,7 +132,6 @@
         </div>
       </section>
 
-      <!-- SEZIONE TABELLA -->
       <section class="data-section">
         <div class="table-header">
           <h2>Your Product Summary for 24 Jul 2026</h2>
@@ -162,19 +155,18 @@
                 <th>Price Index</th>
                 <th>Matches</th>
                 <th>Price Position</th>
+                <th>Actions</th>
               </tr>
             </thead>
             
             <tbody id="productsTableBody">
               
-              <!-- Caso in cui non ci sono prodotti -->
               <tr *ngIf="products.length === 0">
-                <td colspan="9" class="empty-state">
+                <td colspan="10" class="empty-state">
                   Nessun prodotto attualmente monitorato. Aggiungi il tuo primo link qui sopra!
                 </td>
               </tr>
 
-              <!-- Iterazione sui prodotti salvati nel DB -->
               <tr *ngFor="let product of products">
                 <td><small style="color: gray;">#{{ product._id | slice:-6 }}</small></td>
                 
@@ -201,7 +193,16 @@
                 <td><span style="color: gray;">--</span></td>
                 <td><span style="color: gray;">0</span></td>
                 <td><span style="color: gray;">--</span></td>
+                
+                <td class="action-cell">
+                  <button type="button" class="btn-delete" (click)="deleteProduct(product._id)" title="Elimina Prodotto">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                    </svg>
+                  </button>
+                </td>
               </tr>
+              
             </tbody>
           </table>
         </div>

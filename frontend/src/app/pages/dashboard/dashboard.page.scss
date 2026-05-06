@@ -127,15 +127,6 @@ body {
       margin-top: 0.25rem;
     }
   }
-
-  .user-actions {
-    display: flex;
-    gap: 1rem;
-    .icon-placeholder {
-      font-size: 1.25rem;
-      cursor: pointer;
-    }
-  }
 }
 
 // --- KPI CARDS ---
@@ -374,6 +365,38 @@ body {
       padding: 3rem !important;
       color: rgba(10, 17, 40, 0.5) !important;
       font-style: italic;
+    }
+
+    
+    /* --- STILE BOTTONE ELIMINA --- */
+    .action-cell {
+      text-align: center;
+      width: 60px; /* Mantiene la colonna stretta */
+    }
+
+    .btn-delete {
+      background-color: rgba(211, 47, 47, 0.1); /* Rosso molto trasparente di base */
+      color: var(--app-danger); /* Usa la variabile rossa globale definita prima */
+      border: 1px solid rgba(211, 47, 47, 0.3);
+      padding: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor; /* Prende in automatico il colore del testo */
+      }
+
+      &:hover {
+        background-color: var(--app-danger); /* Si riempie di rosso... */
+        color: var(--app-white); /* ...e l'icona diventa bianca */
+        transform: scale(1.05); /* Effetto "pop" al passaggio del mouse */
+      }
     }
   }
 }

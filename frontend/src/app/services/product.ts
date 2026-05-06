@@ -32,4 +32,10 @@ export class ProductService {
     // Passiamo l'url e gli headers con il token
     return this.http.get(this.apiUrl, { headers: this.getHeaders() });
   }
+
+  // 3. Chiamata DELETE per rimuovere un prodotto dal DB
+  deleteProduct(productId: string): Observable<any> {
+    // La chiamata andrà verso: http://localhost:3000/api/products/{ID_DEL_PRODOTTO}
+    return this.http.delete(`${this.apiUrl}/${productId}`, { headers: this.getHeaders() });
+  }
 }
