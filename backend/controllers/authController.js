@@ -81,7 +81,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id },     // Payload (dati pubblici ma firmati)
       process.env.JWT_SECRET,   // La nostra chiave segreta
-      { expiresIn: '1h' }       // Scadenza del token
+      { expiresIn: '24h' }       // Scadenza del token
     );
 
     // Restituiamo il token e i dati base dell'utente al frontend

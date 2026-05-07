@@ -29,13 +29,6 @@
               Cambiamenti
             </a>
           </li>
-
-          <li>
-            <a href="#">
-              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z"/></svg>
-              Comparazioni 
-            </a>
-          </li>
           
           <li>
             <a href="#">
@@ -134,11 +127,33 @@
 
       <section class="data-section">
         <div class="table-header">
-          <h2>Your Product Summary for 24 Jul 2026</h2>
+          <h2>Il tuo sommario dei prodotti per {{ today | date:'fullDate' }}</h2>
           <div class="table-controls">
-            <button class="btn-outline">Export Excel</button>
-            <button class="btn-outline">Filters</button>
-            <input type="search" placeholder="Search..." class="search-input">
+            <button type="button" class="btn-outline sort-btn" (click)="presentSortOptions()">
+              <svg class="sort-icon" viewBox="0 0 24 24">
+                <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+              </svg>
+              Ordina per
+            </button>
+
+            <div class="search-wrapper">
+              <svg class="search-icon" viewBox="0 0 24 24" (click)="filterProducts()" title="Avvia ricerca">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+
+              <input type="text" 
+                [(ngModel)]="searchQuery" 
+                (keyup.enter)="filterProducts()"
+                placeholder="Cerca per Nome del prodotto..." 
+                class="search-input">
+
+              <button *ngIf="searchQuery" class="clear-icon" (click)="clearSearch()" title="Annulla ricerca">
+                <svg viewBox="0 0 24 24">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+              </button>
+            </div>
+
           </div>
         </div>
 
@@ -147,23 +162,27 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Product Name</th>
-                <th>Your Price</th>
-                <th>Min. Competitor Price</th>
-                <th>Avg. Competitor Price</th>
-                <th>Max Competitor Price</th>
-                <th>Price Index</th>
-                <th>Matches</th>
-                <th>Price Position</th>
-                <th>Actions</th>
+                <th>Nome del prodotto</th>
+                <th>Prezzo corrente</th>
+                <th>Variazione Prezzo</th>
+                <th>Azioni</th>
               </tr>
             </thead>
             
             <tbody id="productsTableBody">
               
               <tr *ngIf="products.length === 0">
-                <td colspan="10" class="empty-state">
-                  Nessun prodotto attualmente monitorato. Aggiungi il tuo primo link qui sopra!
+                <td colspan="5" class="empty-state">
+                  
+                  <ng-container *ngIf="searchQuery; else noProductsInDb">
+                    <strong>Nessun prodotto trovato!</strong><br>
+                    <small>Clicca la "X" nella barra di ricerca per tornare alla dashboard completa.</small>
+                  </ng-container>
+
+                  <ng-template #noProductsInDb>
+                    Nessun prodotto attualmente monitorato. Aggiungi il tuo primo link qui sopra!
+                  </ng-template>
+
                 </td>
               </tr>
 
@@ -187,12 +206,26 @@
                   {{ product.currentPrice ? (product.currentPrice | currency:'EUR') : 'N/D' }}
                 </td>
                 
-                <td><span style="color: gray;">--</span></td>
-                <td><span style="color: gray;">--</span></td>
-                <td><span style="color: gray;">--</span></td>
-                <td><span style="color: gray;">--</span></td>
-                <td><span style="color: gray;">0</span></td>
-                <td><span style="color: gray;">--</span></td>
+                <td>
+                  <ng-container *ngIf="getVariationData(product) as varData">
+                    
+                    <div *ngIf="!varData.hasVariation" class="variation-cell trend-none" title="Dati insufficienti">
+                      &mdash; </div>
+
+                    <div *ngIf="varData.hasVariation && varData.isIncrease" class="variation-cell trend-up">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/> </svg>
+                      +{{ varData.value }}
+                    </div>
+
+                    <div *ngIf="varData.hasVariation && !varData.isIncrease" class="variation-cell trend-down">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/> </svg>
+                      -{{ varData.value }}
+                    </div>
+
+                  </ng-container>
+                </td>
                 
                 <td class="action-cell">
                   <button type="button" class="btn-delete" (click)="deleteProduct(product._id)" title="Elimina Prodotto">
