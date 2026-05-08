@@ -7,7 +7,7 @@ const startPriceMonitor = () => {
     // '*/2 * * * *' = Esegui ogni 2 minuti (PER TESTARE ORA)
     // '0 3 * * *' = Esegui tutti i giorni alle 03:00 di notte (PER LA CONSEGNA)
     
-    cron.schedule('0 3 * * *', async () => {
+    cron.schedule('*/1 * * * *', async () => {
         console.log('[CRON JOB] Avvio controllo prezzi in background...');
 
         try {
@@ -24,6 +24,7 @@ const startPriceMonitor = () => {
 
             // 3. Cicliamo su ogni prodotto (usiamo for...of per fare una pagina alla volta e non far crashare il server)
             for (let product of products) {
+                console.log('##################################################');
                 console.log(`Analisi di: ${product.name}...`);
                 
                 const page = await browser.newPage();
@@ -71,10 +72,13 @@ const startPriceMonitor = () => {
 
             // Alla fine del ciclo, chiudiamo l'intero browser
             await browser.close();
-            console.log('[CRON JOB] Controllo prezzi terminato con successo.');
+            console.log('[CRON JOB] Controllo prezzi terminato.');
+            console.log('##################################################');
+            
 
         } catch (error) {
             console.error('Errore nel Cron Job:', error);
+            console.log('##################################################');
         }
     });
 };

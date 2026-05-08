@@ -12,7 +12,7 @@ const addProduct = async (req, res) => {
     try {
         console.log(`Avvio scraping avanzato per: ${url}`);
         
-        // 1. Setup Puppeteer (Mascheramento Avanzato)
+        // 1. Setup Puppeteer
         const browser = await puppeteer.launch({ 
             headless: "new",
             args: [
@@ -44,7 +44,7 @@ const addProduct = async (req, res) => {
             let extractedImage = null;
             let extractedPrice = null;
 
-            // --- STRATEGIA 1: L'ARMA SEGRETA (JSON-LD SEO DATA) ---
+            // --- STRATEGIA 1:(JSON-LD SEO DATA) ---
             // Funziona benissimo per Zalando, StockX e siti moderni
             const jsonScripts = document.querySelectorAll('script[type="application/ld+json"]');
             for (let script of jsonScripts) {

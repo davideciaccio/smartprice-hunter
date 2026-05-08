@@ -15,35 +15,34 @@
         <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="sidebar-logo" />
       </div>
       
-      <nav class="nav-menu">
+        <nav class="nav-menu">
         <ul>
-          <li class="active">
-            <a href="#">
+          <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <a routerLink="/dashboard">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
               Sommario
             </a>
           </li>
-          <li>
-            <a href="#">
-              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-              Cambiamenti
+          <li routerLinkActive="active">
+            <a routerLink="/price-history">
+              <svg viewBox="0 0 24 24" class="nav-icon"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+              Storico prezzi
             </a>
           </li>
-          
-          <li>
-            <a href="#">
+          <li routerLinkActive="active">
+            <a routerLink="/map">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               Mappa
             </a>
           </li>
-          <li>
-            <a href="#">
+          <li routerLinkActive="active">
+            <a routerLink="/camera">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg>
               Fotocamera
             </a>
           </li>
-          <li>
-            <a href="#">
+          <li routerLinkActive="active">
+            <a routerLink="/notices">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
               Avvisi
             </a>
@@ -51,9 +50,8 @@
           
           <li class="nav-divider"></li>
           
-          
-          <li>
-            <a href="#">
+          <li routerLinkActive="active">
+            <a routerLink="/manage-account">
               <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
               Gestione account
             </a>
@@ -74,52 +72,40 @@
           
           <div class="title-text">
             <h1>Sommario</h1>
-            <p>Here are today's pricing updates!</p>
+            <p>Qui ci sono gli aggiornamenti sui prezzi di oggi!</p>
           </div>
         </div>
       </header>
 
       <section class="kpi-grid">
         <div class="kpi-card">
-          <h3>Price Index</h3>
-          <div class="value accent">102.40</div>
-          <p class="trend negative">-0.03 change this week</p>
+          <h3>I tuoi prodotti</h3>
+          <div class="value">{{ totalProducts }} <small>prodotti</small></div>
         </div>
         <div class="kpi-card">
-          <h3>Your Products</h3>
-          <div class="value">3,598 <small>products</small></div>
-          <p>873 matches</p>
-        </div>
-        <div class="kpi-card">
-          <h3>Price Changes</h3>
-          <div class="value">15 <small>yesterday</small></div>
-          <p>75 this week</p>
-        </div>
-        <div class="kpi-card">
-          <h3>Price Position</h3>
-          <div class="chart-placeholder">
-            <div class="fake-pie"></div>
-          </div>
+          <h3>Cambiamenti</h3>
+          <div class="value"> {{ changesToday}} <small>oggi</small></div>
+          <p> {{changesWeek}} questa settimana</p>
         </div>
       </section>
 
       <section class="scraping-trigger-section">
         <div class="scraping-widget">
-          <h3>Aggiungi un nuovo prodotto da monitorare</h3>
+          <h3>Aggiungi l'URL del prodotto da monitorare</h3>
             <div class="input-group">
             <input type="url" 
                   id="productUrlInput" 
                   [(ngModel)]="newProductUrl" 
                   [disabled]="isLoading"
-                  placeholder="https://www.ecommerce.com/prodotto-da-scrapare..." 
+                  placeholder="https://www.ecommerce.com/prodotto_da_monitorare..." 
                   required>
                   
             <button class="btn-eggplant" 
                     id="triggerScrapingBtn" 
                     (click)="startScraping()" 
                     [disabled]="isLoading || !newProductUrl">
-              <span *ngIf="!isLoading">Add Product</span>
-              <span *ngIf="isLoading">Scraping... ⏳</span>
+              <span *ngIf="!isLoading">Aggiungi prodotto</span>
+              <span *ngIf="isLoading">Scraping...</span>
             </button>
           </div>
         </div>

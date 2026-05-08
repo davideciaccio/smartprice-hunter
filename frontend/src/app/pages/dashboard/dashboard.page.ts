@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActionSheetController, IonicModule, ToastController } from '@ionic/angular';
 import { ProductService } from 'src/app/services/product';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class DashboardPage implements OnInit {
   newProductUrl: string = ''; 
@@ -18,8 +19,10 @@ export class DashboardPage implements OnInit {
   originalProducts: any[] = []; // Memorizza l'ordine originale dei prodotti
   today: Date = new Date();
   isLoading: boolean = false; 
-
   isSidebarActive: boolean = false; 
+  totalProducts: number = 0;
+  changesToday: number = 0;
+  changesWeek: number = 0;
 
   constructor(
     private productService: ProductService,
@@ -44,6 +47,7 @@ export class DashboardPage implements OnInit {
       next: (data) => {
         this.products = [...data];
         this.originalProducts = [...data];
+        this.calculateStats();
       },
       error: (err) => {
         console.error('Errore caricamento prodotti:', err);
@@ -122,6 +126,7 @@ export class DashboardPage implements OnInit {
           this.originalProducts = this.originalProducts.filter(p => p._id !== productId);
           // 4. Mostra banner di successo
           this.showToast('Prodotto eliminato con successo', 'success');
+          this.calculateStats();
         },
         error: (err) => {
           console.error('Errore durante l\'eliminazione:', err);
@@ -215,6 +220,39 @@ export class DashboardPage implements OnInit {
 
     // Opzionale: un piccolo feedback all'utente
     this.showToast(`Prodotti ordinati per prezzo ${order === 'asc' ? 'crescente' : 'decrescente'}`, 'primary');
+  }
+
+  calculateStats() {
+    // 1. Conteggio totale prodotti
+    this.totalProducts = this.originalProducts.length;
+
+    const now = new Date();
+    // Inizio di oggi (ore 00:00:00)
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Una settimana fa
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    let countToday = 0;
+    let countWeek = 0;
+
+    this.originalProducts.forEach(product => {
+      if (product.priceHistory && product.priceHistory.length > 1) {
+        // Iteriamo sullo storico (saltando il primo elemento che è il prezzo di creazione)
+        product.priceHistory.slice(1).forEach((entry: any) => {
+          const entryDate = new Date(entry.date);
+          
+          if (entryDate >= todayStart) {
+            countToday++;
+          }
+          if (entryDate >= weekAgo) {
+            countWeek++;
+          }
+        });
+      }
+    });
+
+    this.changesToday = countToday;
+    this.changesWeek = countWeek;
   }
 
 }
