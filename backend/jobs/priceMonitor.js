@@ -7,7 +7,7 @@ const startPriceMonitor = () => {
     // '*/2 * * * *' = Esegui ogni 2 minuti (PER TESTARE ORA)
     // '0 3 * * *' = Esegui tutti i giorni alle 03:00 di notte (PER LA CONSEGNA)
     
-    cron.schedule('*/1 * * * *', async () => {
+    cron.schedule('0 3 * * *', async () => {
         console.log('[CRON JOB] Avvio controllo prezzi in background...');
 
         try {
