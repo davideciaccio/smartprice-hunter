@@ -178,68 +178,117 @@ $white: var(--app-white, #FFFFFF);
 }
 
 /* Stili Aggiuntivi per Form Avanzato */
-    .input-group {
-      margin-bottom: 1.25rem;
-      
-      /* ... tuo css esistente per label e input ... */
+.input-group {
+  margin-bottom: 1.25rem;
+  
+  /* ... tuo css esistente per label e input ... */
 
-      .password-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        width: 100%; /* FIX 1: Forza il contenitore a occupare tutto lo spazio orizzontale */
+  .password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%; /* FIX 1: Forza il contenitore a occupare tutto lo spazio orizzontale */
 
-        input {
-          flex: 1; /* FIX 2: Forza l'input a espandersi per riempire il contenitore */
-          width: 100%;
-          padding-right: 2.5rem; /* Fa spazio all'icona occhio */
-        }
-
-        .eye-btn {
-          position: absolute;
-          right: 0.5rem;
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0.25rem;
-
-          svg {
-            width: 20px;
-            height: 20px;
-            fill: rgba(10, 17, 40, 0.5);
-            transition: fill 0.2s;
-          }
-
-          &:hover svg { fill: $text-midnight; }
-        }
-      }
-
-      .error-msg {
-        display: block;
-        color: #d9534f; /* Rosso per gli errori */
-        font-size: 0.8rem;
-        margin-top: 0.3rem;
-        font-weight: 500;
-      }
-
-      .strength-meter {
-        height: 4px;
-        background-color: #eee;
-        border-radius: 2px;
-        margin-top: 0.5rem;
-        overflow: hidden;
-
-        .strength-bar {
-          height: 100%;
-          width: 0;
-          transition: all 0.3s ease;
-
-          &.weak { width: 33%; background-color: #d9534f; } /* Rosso */
-          &.medium { width: 66%; background-color: #f0ad4e; } /* Giallo */
-          &.strong { width: 100%; background-color: #5cb85c; } /* Verde */
-        }
-      }
+    input {
+      flex: 1; /* FIX 2: Forza l'input a espandersi per riempire il contenitore */
+      width: 100%;
+      padding-right: 2.5rem; /* Fa spazio all'icona occhio */
     }
+
+    .eye-btn {
+      position: absolute;
+      right: 0.5rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: rgba(10, 17, 40, 0.5);
+        transition: fill 0.2s;
+      }
+
+      &:hover svg { fill: $text-midnight; }
+    }
+  }
+
+  .error-msg {
+    display: block;
+    color: #d9534f; /* Rosso per gli errori */
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+    font-weight: 500;
+  }
+
+  .strength-meter {
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s ease;
+
+      &.weak { width: 33%; background-color: #d9534f; } /* Rosso */
+      &.medium { width: 66%; background-color: #f0ad4e; } /* Giallo */
+      &.strong { width: 100%; background-color: #5cb85c; } /* Verde */
+    }
+  }
+}
+
+
+.x-footer {
+
+  padding: 15px 20px;
+
+  background-color: #FFFFFF; /* Sfondo Bianco */
+
+  border-top: 1px solid #0A1128; /* Strisciolina in Blu Notte per staccare il footer */
+
+  
+
+  nav {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 16px; 
+
+    
+
+    a, span {
+
+      color: #0A1128; /* Scritte in Blu Notte */
+
+      text-decoration: none;
+
+      font-size: 13px;
+
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    }
+
+
+
+    a:hover {
+
+      color: #14224f; /* Hover leggermente più chiaro */
+
+      text-decoration: underline;
+
+    }
+
+  }
+
+}
