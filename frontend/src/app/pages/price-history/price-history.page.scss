@@ -107,3 +107,205 @@ body {
 
   .main-content { padding: 1rem; }
 }
+
+/* Aggiungi in fondo al file price-history.page.scss */
+
+/* === TABELLA E CONTENITORI (Stile Dashboard) === */
+.data-section {
+  background-color: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
+  border: 1px solid $text-midnight; /* Bordo 1px Blu Notte */
+  overflow: hidden;
+
+  .table-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $border-light;
+
+    h2 { font-size: 1.1rem; color: $text-midnight; }
+    
+    .table-controls { display: flex; gap: 0.5rem; }
+  }
+}
+
+/* === BARRA DI RICERCA === */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .search-icon {
+    position: absolute; left: 0.6rem; width: 18px; height: 18px;
+    fill: rgba(10, 17, 40, 0.4); cursor: pointer; z-index: 2; transition: fill 0.2s;
+    &:hover { fill: $text-midnight; }
+  }
+
+  .search-input {
+    padding: 0.5rem 2.5rem 0.5rem 2.2rem; 
+    border: 1px solid $text-midnight; /* Bordo 1px blu notte */
+    border-radius: 6px; width: 100%; min-width: 250px;
+    color: $text-midnight !important; 
+    background-color: rgba(10, 17, 40, 0.03) !important; /* Grigio bluastro chiarissimo */
+    appearance: none; outline: none;
+    &::-webkit-search-decoration, &::-webkit-search-cancel-button { display: none; }
+    &:focus { border-color: $text-midnight; box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1); }
+  }
+
+  .clear-icon {
+    position: absolute; right: 0.6rem; background: none; border: none; padding: 0; cursor: pointer;
+    svg { width: 18px; height: 18px; fill: rgba(10, 17, 40, 0.3); }
+    &:hover svg { fill: var(--app-danger, #d9534f); }
+  }
+}
+
+/* === TABELLA GRAFICI === */
+.table-responsive { overflow-x: auto; }
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th, td { padding: 1.5rem; font-size: 0.9rem; }
+
+  th {
+    background-color: rgba(10, 17, 40, 0.04);
+    color: $text-midnight;
+    font-weight: 600;
+    border-bottom: 2px solid $text-midnight; /* Bordo separatore blu notte */
+  }
+
+  td {
+    border-bottom: 1px solid $border-light;
+    color: $text-midnight;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover { background-color: rgba(10, 17, 40, 0.02); }
+
+  .col-info { width: 40%; min-width: 250px; }
+  .col-chart { width: 60%; min-width: 300px; }
+
+  .product-cell {
+    display: flex; align-items: center; gap: 1rem;
+    .product-thumb {
+      width: 50px; height: 50px; border-radius: 6px; object-fit: cover;
+      background-color: rgba(10, 17, 40, 0.03); border: 1px solid $border-light;
+    }
+    .product-thumb-placeholder {
+      width: 50px; height: 50px; border-radius: 6px; background: rgba(10, 17, 40, 0.05);
+      display: flex; align-items: center; justify-content: center; font-weight: bold; color: $text-midnight;
+    }
+    .product-details {
+      display: flex;
+      flex-direction: column;
+
+      .product-name-link {
+        font-weight: 600;
+        color: $text-midnight; // Mantiene il colore Blu Notte
+        text-decoration: none;
+        display: block;
+
+        &:hover {
+          text-decoration: underline;
+          opacity: 0.8;
+        }
+      }
+
+      small {
+        font-size: 0.8rem;
+        color: rgba(10, 17, 40, 0.6);
+      }
+    }
+  }
+
+  /* Contenitore grafico in miniatura */
+  .chart-container {
+    width: 100%;
+    height: 80px; /* Altezza fissa per i mini grafici */
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+    &:hover { transform: scale(1.02); } /* Piccolo effetto zoom al passaggio del mouse */
+  }
+
+  .empty-state {
+    text-align: center; padding: 3rem !important; color: $text-midnight !important; font-style: italic;
+  }
+}
+
+/* === STILI MODALE (Grafico Grande) === */
+.modal-header-custom {
+  ion-toolbar {
+    --background: $white;
+    --border-color: $text-midnight;
+    border-bottom: 1px solid $text-midnight;
+  }
+  .modal-title {
+    color: $text-midnight;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .close-btn {
+    color: $text-midnight;
+    font-weight: 600;
+  }
+}
+
+.modal-content-custom {
+  --background: $white;
+  
+  .large-chart-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    padding: 1rem;
+  }
+}
+
+/* =====================================
+   STILI MODALE (Grafico Grande)
+   ===================================== */
+   
+/* Forza Ionic a non usare il tema scuro di sistema per questa modale */
+ion-modal {
+  --border-radius: 16px; 
+  --background: #ffffff !important;
+  --ion-background-color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+}
+
+.modal-header-custom {
+  ion-toolbar {
+    --background: #ffffff !important;
+    --border-color: var(--app-text-midnight);
+    border-bottom: 1px solid var(--app-text-midnight);
+  }
+  
+  .modal-title {
+    color: var(--app-text-midnight) !important; /* Forza il testo a Blu Notte */
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  
+  .close-btn {
+    color: #d9534f !important; 
+    font-weight: 700;
+    --color: #d9534f !important;
+  }
+}
+
+.modal-content-custom {
+  --background: #ffffff !important;
+  
+  .large-chart-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    padding: 1rem;
+    background-color: #ffffff; /* Sfondo bianco dietro al canvas */
+  }
+}

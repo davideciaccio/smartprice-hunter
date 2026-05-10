@@ -1,5 +1,4 @@
 <div class="dashboard-layout">
-    
   <aside class="sidebar" [class.active]="isSidebarActive">
     <div class="brand">
       <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="sidebar-logo" />
@@ -7,45 +6,13 @@
     
     <nav class="nav-menu">
       <ul>
-        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <a routerLink="/dashboard">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-            Sommario
-          </a>
-        </li>
-        <li routerLinkActive="active">
-          <a routerLink="/price-history">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-            Storico prezzi
-          </a>
-        </li>
-        <li routerLinkActive="active">
-          <a routerLink="/map">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            Mappa
-          </a>
-        </li>
-        <li routerLinkActive="active">
-          <a routerLink="/camera">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg>
-            Fotocamera
-          </a>
-        </li>
-        <li routerLinkActive="active">
-          <a routerLink="/notices">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-            Avvisi
-          </a>
-        </li>
-        
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a routerLink="/dashboard"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> Sommario</a></li>
+        <li routerLinkActive="active"><a routerLink="/price-history"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg> Storico prezzi</a></li>
+        <li routerLinkActive="active"><a routerLink="/map"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Mappa</a></li>
+        <li routerLinkActive="active"><a routerLink="/camera"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg> Fotocamera</a></li>
+        <li routerLinkActive="active"><a routerLink="/notices"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg> Avvisi</a></li>
         <li class="nav-divider"></li>
-        
-        <li routerLinkActive="active">
-          <a routerLink="/manage-account">
-            <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Gestione account
-          </a>
-        </li>
+        <li routerLinkActive="active"><a routerLink="/manage-account"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Gestione account</a></li>
       </ul>
     </nav>
   </aside>
@@ -55,21 +22,86 @@
   <main class="main-content">
     
     <header class="topbar">
-        <div class="title-area">
-          <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
-            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-          </button>
-          
-          <div class="title-text">
-            <h1>Storico prezzi</h1>
-            <p>Qui puoi visualizzare lo storico prezzi di ogni tuo prodotto!</p>
+      <div class="title-area">
+        <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <div class="title-text">
+          <h1>Storico prezzi</h1>
+          <p>Qui puoi visualizzare lo storico prezzi di ogni tuo prodotto!</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="data-section">
+      
+      <div class="table-header">
+        <h2>Seleziona un prodotto</h2>
+        <div class="table-controls">
+          <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" (click)="filterProducts()"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="filterProducts()" placeholder="Cerca per Nome..." class="search-input">
+            <button *ngIf="searchQuery" class="clear-icon" (click)="clearSearch()">
+              <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
           </div>
         </div>
-      </header>
+      </div>
 
-    <section>
-        <p>Il contenuto di questa pagina andrà qui...</p>
+      <div class="table-responsive">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th class="col-info">Nome del prodotto</th>
+              <th class="col-chart">Andamento prezzo (Clicca per espandere)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="products.length === 0">
+              <td colspan="2" class="empty-state">
+                <strong>Nessun prodotto trovato!</strong>
+              </td>
+            </tr>
+            <tr *ngFor="let product of products">
+              <td class="col-info">
+                <div class="product-cell">
+                  <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb">
+                  <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
+                  <div class="product-details">
+                    <a [href]="product.url" target="_blank" class="product-name-link">
+                      {{ product.name }}
+                    </a>
+                  </div>
+                </div>
+              </td>
+              <td class="col-chart">
+                <div class="chart-container" (click)="openChartModal(product)" title="Espandi grafico">
+                  <canvas [id]="'chart-' + product._id"></canvas>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
   </main>
 </div>
+
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+  <ng-template>
+    <ion-header class="modal-header-custom">
+      <ion-toolbar>
+        <ion-title class="modal-title">Grafico andamento prezzi per : {{ selectedProduct?.name }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeModal()" class="close-btn">Chiudi</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding modal-content-custom">
+      <div class="large-chart-container">
+        <canvas id="modalCanvas"></canvas>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

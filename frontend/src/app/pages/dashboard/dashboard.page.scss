@@ -254,7 +254,7 @@ body {
   background-color: $white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
-  border: 1px solid $border-light;
+  border: 1px solid $text-midnight;
   overflow: hidden;
 
   .table-header {
@@ -280,14 +280,14 @@ body {
 
       .btn-outline {
         background: transparent;
-        border: 1px solid $border-light;
+        border: 1px solid $text-midnight;
         padding: 0.5rem 1rem;
         border-radius: 6px;
         color: $text-midnight;
         cursor: pointer;
         font-size: 0.85rem;
 
-        &:hover { background-color: $bg-pale-blue; }
+        &:hover { background-color: rgba(10, 17, 40, 0.05); }
       }
 
       .sort-btn {
@@ -328,7 +328,7 @@ body {
         .search-input {
           /* Aumentato padding-right a 2.5rem per far spazio alla X */
           padding: 0.5rem 2.5rem 0.5rem 2.2rem; 
-          border: 1px solid var(--app-border-light);
+          border: 1px solid $text-midnight;
           border-radius: 6px;
           width: 100%;
           color: #0A1128 !important;
@@ -345,7 +345,8 @@ body {
 
           &:focus {
             outline: none;
-            border-color: var(--app-accent-eggplant);
+            border-color: $text-midnight; 
+            box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
           }
         }
 
@@ -391,9 +392,9 @@ body {
 
     th {
       background-color: rgba(10, 17, 40, 0.04);
-      color: rgba(10, 17, 40, 0.7);
+      color: $text-midnight;
       font-weight: 600;
-      border-bottom: 2px solid $border-light;
+      border-bottom: 2px solid $text-midnight;
       white-space: nowrap;
     }
 
@@ -437,13 +438,20 @@ body {
         display: flex;
         flex-direction: column;
 
-        strong {
+        .product-name-link {
           font-weight: 600;
-          color: $text-midnight;
+          color: $text-midnight; // Mantiene il colore Blu Notte
+          text-decoration: none; // Toglie la sottolineatura di default
           max-width: 200px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          display: block;
+
+          &:hover {
+            text-decoration: underline; // Sottolineatura solo al passaggio del mouse
+            opacity: 0.8;
+          }
         }
 
         small {

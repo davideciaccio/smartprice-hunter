@@ -130,7 +130,7 @@
               <input type="text" 
                 [(ngModel)]="searchQuery" 
                 (keyup.enter)="filterProducts()"
-                placeholder="Cerca per Nome del prodotto..." 
+                placeholder="Cerca per Nome..." 
                 class="search-input">
 
               <button *ngIf="searchQuery" class="clear-icon" (click)="clearSearch()" title="Annulla ricerca">
@@ -150,7 +150,7 @@
                 <th>ID</th>
                 <th>Nome del prodotto</th>
                 <th>Prezzo corrente</th>
-                <th>Variazione Prezzo</th>
+                <th>Variazione prezzo</th>
                 <th>Azioni</th>
               </tr>
             </thead>
@@ -181,9 +181,9 @@
                     <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
                     
                     <div class="product-details">
-                      <strong>{{ product.name }}</strong>
-                      <small *ngIf="product.barcode">EAN: {{ product.barcode }}</small>
-                      <small *ngIf="!product.barcode">Nessun Barcode</small>
+                      <a [href]="product.url" target="_blank" class="product-name-link">
+                        {{ product.name }}
+                      </a>
                     </div>
                   </div>
                 </td>
