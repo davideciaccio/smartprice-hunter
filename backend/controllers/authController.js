@@ -10,15 +10,25 @@ const register = async (req, res) => {
     // req.body è il corpo della richiesta http di tipo POST, ovvero i dati inseriti nel frontend dall'utente
     const { username, email, password } = req.body;
 
-    if (!username ||!email || !password ) {
+    if (!username || !email || !password ) {
       return res.status(400).json({ message: "Username, Email e password sono richiesti" });
     }
-    // Controllo se l'utente esiste già nel Database
-    // await: Dice a Node: "Fermati qui e aspetta che MongoDB abbia finito di cercare prima di andare avanti".
-    const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-      return res.status(400).json({ message: 'Utente già registrato con questa email.' });
+    if (password.length < 8) { // Allineato al frontend (minimo 8)
+      return res.status(400).json({ message: "La password deve contenere almeno 8 caratteri." });
+    }
+
+    // 1. Controllo se l'EMAIL esiste già
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ field: 'email', message: 'Questa email è già registrata.' });
+    }
+
+    // 2. Controllo se l'utente esiste già nel Database
+    // await: Dice a Node: "Fermati qui e aspetta che MongoDB abbia finito di cercare prima di andare avanti".
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ field: 'username', message: 'Questo username è già in uso.' });
     }
 
     // "Salatura" e Criptazione della password

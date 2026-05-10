@@ -168,8 +168,22 @@ export class RegisterPage {
       },
       error: (err) => {
         console.error('Errore registrazione', err);
-        // Gestione errori provenienti dal Backend (es. "Email già in uso")
-        alert(err.message || 'Errore durante la registrazione. Riprova.');
+        // Estraiamo il JSON di errore del backend (es. { field: 'username', message: '...' })
+        const backendError = err.error;
+
+        // Controlliamo se il backend ci ha inviato il campo specifico su cui c'è l'errore
+        if (backendError && backendError.field) {
+          
+          if (backendError.field === 'username') {
+             this.errors.username = backendError.message;
+          } else if (backendError.field === 'email') {
+             this.errors.email = backendError.message;
+          }
+
+        } else {
+          // Fallback generico se l'errore non ha la struttura prevista
+          alert(backendError?.message || 'Errore durante la registrazione. Riprova.');
+        }
       }
     });
   }

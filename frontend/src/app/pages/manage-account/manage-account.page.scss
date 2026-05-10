@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $bg-pale-blue: var(--app-bg-pale-blue);
 $text-midnight: var(--app-text-midnight);
 $white: var(--app-white);
@@ -15,7 +17,7 @@ body {
 
 .dashboard-layout { display: flex; height: 100vh; }
 
-/* === SIDEBAR === */
+/* === SIDEBAR (Invariata) === */
 .sidebar {
   width: 250px;
   background-color: $text-midnight;
@@ -91,7 +93,7 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
-/* === RESPONSIVE (TABLET E MOBILE) === */
+//=== MEDIA QUERIES ===
 @media (max-width: 768px) {
   .topbar {
     .title-area { display: flex; align-items: center; gap: 0.5rem; }
@@ -106,4 +108,241 @@ body {
   }
 
   .main-content { padding: 1rem; }
+}
+
+/* === STILE GESTIONE ACCOUNT === */
+
+// Contenitore centrato per guidare la lettura (Single Column Layout)
+.account-container {
+  display: flex;
+  justify-content: center; // Centra il contenuto
+  padding-bottom: 3rem;
+}
+
+// Impiliamo le card in una colonna di larghezza ottimale per la lettura
+.account-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; // Spazio tra le sezioni
+  width: 100%;
+  max-width: 650px; // Larghezza massima per evitare l'effetto "riga troppo lunga"
+}
+
+// Card senza bordi duri, galleggianti tramite drop-shadow
+.account-card {
+  background-color: $white;
+  border: 1px solid $text-midnight;
+  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 2;
+
+  .card-header {
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $text-midnight;
+      margin-bottom: 0.85rem;
+    }
+    p {
+      font-size: 0.9rem;
+      color: #64748b; // Grigio medio per descrizioni meno invadenti
+      line-height: 1.5;
+    }
+  }
+}
+
+// Form Inputs coerenti con il Login
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-midnight;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background-color: $white;
+    color: $text-midnight;
+    border: 1px solid $text-midnight;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+
+    /* Previene stili predefiniti su Safari/iOS */
+    -webkit-appearance: none;
+    appearance: none;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus, 
+    &:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px $white inset !important; /* Forza lo sfondo bianco */
+        -webkit-text-fill-color: $text-midnight !important; /* Forza il testo blu notte */
+        transition: background-color 5000s ease-in-out 0s; /* Evita sfarfallii strani */
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(10, 17, 40, 0.1); 
+    }
+  }
+
+  .error-feedback {
+    font-size: 0.85rem;
+    color: #e53e3e;
+    font-weight: 500;
+    margin-top: 0.25rem;
+  }
+}
+
+// Bottoni ad alto contrasto per le Call To Action primarie uguali a quello del register/login
+.btn-primary-action {
+  width: 100%;
+  background-color: $text-midnight;
+  color: $white;
+  border: 1px solid $text-midnight;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// Card elimina account
+.danger-card {
+  background-color: $white;
+  border: 1px solid $text-midnight;
+  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 2;
+
+  .danger-title {
+    color: #dc2626 !important; // Rosso deciso per il titolo
+  }
+
+  .danger-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .danger-warning-text {
+      font-size: 0.95rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+  }
+
+  .btn-danger-action {
+    background-color: #ef4444; // Rosso vibrante per l'azione distruttiva
+    color: $white;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%; // Occupa tutta la larghezza per coerenza con gli altri bottoni
+
+    &:hover {
+      background-color: #dc2626;
+      border-color: #dc2626;
+    }
+  }
+
+
+// ==========================================================================
+// === STILI AGGIUNTIVI PER FORM PASSWORD AVANZATO ===
+// ==========================================================================
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%; /* FIX 1: Forza il contenitore a occupare tutto lo spazio orizzontale */
+
+  .form-input {
+    flex: 1; /* FIX 2: Forza l'input a espandersi per riempire il contenitore */
+    width: 100%;
+    padding-right: 2.5rem; /* Fa spazio all'icona occhio */
+  }
+
+  .eye-btn {
+    position: absolute;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: rgba(10, 17, 40, 0.5);
+      transition: fill 0.2s;
+    }
+
+    &:hover svg { fill: $text-midnight; } // Si colora al passaggio del mouse
+  }
+}
+
+  // Barra per la forza della password
+  .strength-meter {
+    height: 4px;
+    background-color: #eee;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s ease;
+
+      &.weak { width: 33%; background-color: #d9534f; } /* Rosso */
+      &.medium { width: 66%; background-color: #f0ad4e; } /* Giallo */
+      &.strong { width: 100%; background-color: #5cb85c; } /* Verde */
+    }
+  }
+}
+
+// Stile per il bottone Logout (Bordo blu notte, sfondo trasparente)
+.btn-outline-action {
+  width: 100%;
+  background-color: $text-midnight;
+  color: $white;
+  border: 1px solid $text-midnight;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }

@@ -50,3 +50,74 @@
   --app-warning: #ed6c02;
   --app-danger: #d32f2f;
 }
+
+/* ==========================================================================
+   === STILE CUSTOM PER POPUP ALERT IONIC (Elimina Account) ===
+   ========================================================================== */
+.custom-delete-alert {
+  
+  // Sfondo bianco, bordo netto e ombreggiatura coerente con le nuove card
+  .alert-wrapper {
+    background-color: #ffffff !important;
+    border: 1px solid var(--app-text-midnight, #0A1128) !important;
+    box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12) !important;
+    border-radius: 12px !important;
+  }
+
+  // Titolo (Rosso pericolo)
+  .alert-title {
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+  }
+
+  // Sottotitolo e Messaggio
+  .alert-sub-title { color: #475569 !important; }
+  .alert-message { color: var(--app-text-midnight, #0A1128) !important; font-size: 1rem !important; }
+
+  // STILE DEL BOX DI TESTO (Allineato al login: bianco con bordo blu notte)
+  .alert-input-wrapper {
+    background: #ffffff !important; 
+    border: 1px solid var(--app-text-midnight, #0A1128) !important; 
+    border-radius: 8px !important; 
+    margin-top: 15px !important;
+    
+    // Disattiviamo le animazioni native di Ionic (la linea sotto l'input)
+    &::after, &::before {
+      display: none !important;
+    }
+  }
+
+  // L'input vero e proprio dentro il box
+  .alert-input { 
+    color: var(--app-text-midnight, #0A1128) !important;
+    padding: 10px !important;
+    border: none !important;
+    border-bottom: none !important; 
+    box-shadow: none !important;    
+    outline: none !important;       
+    font-size: 1rem !important;
+
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+      -webkit-text-fill-color: var(--app-text-midnight, #0A1128) !important;
+    }
+  }
+
+  // PULSANTI
+  .alert-button-group {
+    padding: 10px !important;
+  }
+
+  .alert-button-role-cancel { 
+    color: #64748b !important; 
+    font-weight: 700 !important; 
+    text-transform: capitalize !important;
+  }
+
+  .alert-button-role-destructive { 
+    color: #dc2626 !important; 
+    font-weight: 700 !important; 
+    text-transform: capitalize !important;
+  }
+}

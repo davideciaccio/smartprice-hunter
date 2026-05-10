@@ -63,3 +63,13 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server in esecuzione sulla porta: ${PORT}`);
 });
+
+// Principio della Separation of Concerns
+// Importiamo e usiamo le rotte di gestione account (account.js)
+const accountRoutes = require('./routes/account');
+// Registrazione del macro-endpoint per l'account
+// Questa riga dice: "Da ora in poi, qualsiasi richiesta HTTP che inizia con il prefisso /api/account 
+// non gestirla qui, ma passala direttamente al modulo accountRoutes che abbiamo importato prima."
+// In questo modo, tutte le rotte definite in accountRoutes (come /update-username, /change-password, /delete)
+// saranno accessibili tramite URL come /api/account/update-username, /api/account/change-password, ecc."
+app.use('/api/account', accountRoutes);
