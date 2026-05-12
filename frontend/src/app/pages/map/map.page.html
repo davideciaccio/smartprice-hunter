@@ -70,22 +70,48 @@
       <section class="map-section">
       
       <div class="map-header">
-        <div class="search-wrapper">
-          <svg class="search-icon" viewBox="0 0 24 24" (click)="filterLocations()" title="Avvia ricerca">
-            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-          </svg>
-
-          <input type="text" 
-            [(ngModel)]="searchQuery" 
-            (keyup.enter)="filterLocations()"
-            placeholder="Cerca un negozio, una città, un CAP..." 
-            class="search-input">
-
-          <button *ngIf="searchQuery" class="clear-icon" (click)="clearSearch()" title="Annulla ricerca">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        <div class="header-flex-container">
+          
+          <div class="search-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" (click)="filterLocations()" title="Avvia ricerca">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
-          </button>
+
+            <input type="text" 
+              [(ngModel)]="searchQuery" 
+              (keyup.enter)="filterLocations()"
+              placeholder="Cerca un negozio, una città, un CAP..." 
+              class="search-input">
+
+            <button *ngIf="searchQuery" class="clear-icon" (click)="clearSearch()" title="Annulla ricerca">
+              <svg viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="nearby-control-group">
+            <small class="instruction-text">Clicca per trovare negozi di elettronica nel raggio di 10 km.</small>
+            
+            <div class="nearby-buttons-row">
+              <button class="btn-nearby" (click)="findNearbyElectronics()" [disabled]="isSearching">
+                <span *ngIf="!isSearching">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  Cerca Negozi
+                </span>
+                <span *ngIf="isSearching">Ricerca...</span>
+              </button>
+
+              <button *ngIf="hasSearchedNearby" class="btn-cancel-nearby" (click)="cancelNearbySearch()" title="Annulla ricerca e pulisci la mappa">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -98,6 +124,8 @@
           </svg>
         </button>
       </div>
+
+
 
     </section>
     
