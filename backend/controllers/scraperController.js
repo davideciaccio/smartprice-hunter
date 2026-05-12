@@ -1,19 +1,16 @@
 const puppeteer = require('puppeteer');
 const Product = require('../models/Product');
 
-// --- CONTROLLER: Aggiungi un nuovo prodotto via Scraping ---
-const addProduct = async (req, res) => {
-    const { url } = req.body;
-
-    if (!url) {
-        return res.status(400).json({ message: 'URL del prodotto mancante.' });
-    }
-
+// =======================================================================
+// MOTORE CONDIVISO: Lo usano sia il Frontend che il Cron Job
+// =======================================================================
+const runScrapingEngine = async (url) => {
+    let browser;
     try {
         console.log(`Avvio scraping avanzato per: ${url}`);
         
-        // 1. Setup Puppeteer
-        const browser = await puppeteer.launch({ 
+        // 1. Setup Puppeteer (esattamente come nel tuo file originale)
+        browser = await puppeteer.launch({ 
             headless: "new",
             args: [
                 '--no-sandbox', 
@@ -24,7 +21,6 @@ const addProduct = async (req, res) => {
         
         const page = await browser.newPage();
         
-        // Falsifichiamo di essere un vero essere umano con un monitor grande e lingua italiana
         await page.setViewport({ width: 1920, height: 1080 });
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         await page.setExtraHTTPHeaders({
@@ -32,25 +28,22 @@ const addProduct = async (req, res) => {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'
         });
         
-        // Andiamo alla pagina (ignoriamo gli errori di rete secondari come immagini che non caricano)
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 40000 });
 
         console.log("Attendo 1 secondo per il rendering di React/Prezzi dinamici...");
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // 2. Logica di Estrazione Multi-Sito
+        // 2. Logica di Estrazione Multi-Sito originale
         const scrapedData = await page.evaluate(() => {
             let extractedTitle = null;
             let extractedImage = null;
             let extractedPrice = null;
 
             // --- STRATEGIA 1:(JSON-LD SEO DATA) ---
-            // Funziona benissimo per Zalando, StockX e siti moderni
             const jsonScripts = document.querySelectorAll('script[type="application/ld+json"]');
             for (let script of jsonScripts) {
                 try {
                     const data = JSON.parse(script.innerText);
-                    // Cerchiamo l'oggetto che contiene "offers" (il prezzo) o "image"
                     let productData = data;
                     if (Array.isArray(data)) productData = data.find(item => item['@type'] === 'Product' || item.offers);
                     else if (data['@graph']) productData = data['@graph'].find(item => item['@type'] === 'Product' || item.offers);
@@ -69,21 +62,18 @@ const addProduct = async (req, res) => {
             }
 
             // --- STRATEGIA 2: FALLBACK CLASSICI E SELETTORI SPECIFICI ---
-            
-            // A. Titolo
             if (!extractedTitle) {
                 extractedTitle = document.querySelector('meta[property="og:title"]')?.content || 
-                                 document.querySelector('#productTitle')?.innerText || // Amazon
+                                 document.querySelector('#productTitle')?.innerText || 
                                  document.querySelector('h1')?.innerText || 
                                  'Prodotto Sconosciuto';
             }
 
-            // B. Immagine
             if (!extractedImage) {
                 const imgSelectors = [
-                    '#landingImage', // Amazon
-                    '#imgBlkFront', // Amazon Libri
-                    '.x-item-image img', // eBay
+                    '#landingImage', 
+                    '#imgBlkFront', 
+                    '.x-item-image img', 
                     'meta[property="og:image"]'
                 ];
                 for (let selector of imgSelectors) {
@@ -95,14 +85,13 @@ const addProduct = async (req, res) => {
                 }
             }
 
-            // C. Prezzo
             if (!extractedPrice) {
                 let priceText = null;
                 const priceSelectors = [
-                    '[data-testid="trade-box-buy-amount"]',// SELETTORE PER STOCKX!
-                    '.a-price .a-offscreen', // Amazon
-                    '.x-price-primary', // eBay
-                    '[data-testid="product-price"]', // Altri siti generici
+                    '[data-testid="trade-box-buy-amount"]',
+                    '.a-price .a-offscreen', 
+                    '.x-price-primary', 
+                    '[data-testid="product-price"]', 
                     'meta[property="product:price:amount"]', 
                     '[itemprop="price"]',
                     '.price'
@@ -116,15 +105,12 @@ const addProduct = async (req, res) => {
                     }
                 }
 
-                // Pulizia del testo prezzo
                 if (priceText) {
-                    // Sostituisce la virgola con il punto per i decimali, rimuove il resto
                     const cleanPrice = priceText.replace(/[^0-9,-]/g, '').replace(',', '.');
                     extractedPrice = parseFloat(cleanPrice);
                 }
             }
 
-            // Forza il prezzo a numero, se fallisce diventa 0
             let finalPrice = Number(extractedPrice);
             if (isNaN(finalPrice)) finalPrice = 0;
 
@@ -136,8 +122,34 @@ const addProduct = async (req, res) => {
         });
 
         await browser.close();
+        return scrapedData; // Ritorniamo i dati anziché rispondere alla richiesta HTTP
 
-        // 3. Salvataggio a Database
+    } catch (error) {
+        console.error('Errore scraping interno:', error);
+        if (browser) await browser.close(); // Chiusura sicura in caso di errore
+        return null; 
+    }
+};
+
+// =======================================================================
+// CONTROLLER: Aggiungi un nuovo prodotto via Scraping
+// =======================================================================
+const addProduct = async (req, res) => {
+    const { url } = req.body;
+
+    if (!url) {
+        return res.status(400).json({ message: 'URL del prodotto mancante.' });
+    }
+
+    try {
+        // Usiamo la funzione centralizzata
+        const scrapedData = await runScrapingEngine(url);
+
+        if (!scrapedData || scrapedData.finalPrice === 0) {
+            return res.status(400).json({ message: 'Impossibile analizzare la pagina. Verifica il link.' });
+        }
+
+        // Salvataggio a Database
         const newProduct = new Product({
             name: scrapedData.title,
             url: url,
@@ -152,8 +164,8 @@ const addProduct = async (req, res) => {
         res.status(201).json({ message: 'Prodotto aggiunto con successo!', product: newProduct });
 
     } catch (error) {
-        console.error('Errore scraping:', error);
-        res.status(500).json({ message: 'Impossibile analizzare la pagina. Il sito potrebbe bloccare i bot.' });
+        console.error('Errore controller scraping:', error);
+        res.status(500).json({ message: 'Errore interno del server.' });
     }
 };
 
@@ -168,24 +180,17 @@ const getUserProducts = async (req, res) => {
     }
 };
 
-// ... (codice precedente: addProduct, getUserProducts)
-
 // --- CONTROLLER: Elimina un singolo prodotto ---
 const deleteProduct = async (req, res) => {
     try {
-        // Estraiamo l'ID del prodotto dall'URL (es: /api/products/65a1b2c3...)
         const productId = req.params.id;
-        
-        // Estraiamo l'ID dell'utente dal nostro fido authMiddleware
         const userId = req.user.userId;
 
-        // Eseguiamo l'eliminazione sicura: deve combaciare sia l'ID prodotto che l'ID utente!
         const deletedProduct = await Product.findOneAndDelete({ 
             _id: productId, 
             user: userId 
         });
 
-        // Se deletedProduct è null, significa che il prodotto non esiste o l'utente non è il proprietario
         if (!deletedProduct) {
             return res.status(404).json({ message: 'Prodotto non trovato o non sei autorizzato a eliminarlo.' });
         }
@@ -198,5 +203,5 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-// ESPORTIAMO ANCHE LA NUOVA FUNZIONE!
-module.exports = { addProduct, getUserProducts, deleteProduct };
+// ESPORTIAMO ANCHE IL MOTORE CONDIVISO
+module.exports = { addProduct, getUserProducts, deleteProduct, runScrapingEngine };

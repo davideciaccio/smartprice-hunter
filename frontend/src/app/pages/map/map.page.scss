@@ -91,6 +91,149 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
+/* ==========================================
+   STILI MAPPA E BARRA DI RICERCA
+   ========================================== */
+
+.map-section {
+  background-color: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
+  border: 1px solid $text-midnight;
+  overflow: hidden;
+  
+  display: flex;
+  flex-direction: column;
+  /* La mappa occuperà tutto lo schermo rimanente */
+  height: calc(100vh - 140px); 
+  min-height: 500px;
+}
+
+.map-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid $text-midnight; /* Bordo blu notte come in dashboard */
+  background-color: $white;
+}
+
+/* --- STILI DELLA BARRA DI RICERCA (Importati dalla Dashboard) --- */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Larghezza massima per non farla espandere all'infinito */
+
+  .search-icon {
+    position: absolute;
+    left: 0.6rem;
+    width: 18px;
+    height: 18px;
+    fill: rgba(10, 17, 40, 0.4);
+    cursor: pointer;
+    z-index: 2;
+    transition: fill 0.2s;
+
+    &:hover {
+      fill: var(--app-accent-eggplant, #4A235A);
+    }
+  }
+
+  .search-input {
+    padding: 0.5rem 2.5rem 0.5rem 2.2rem; 
+    border: 1px solid $text-midnight;
+    border-radius: 6px;
+    width: 100%;
+    color: #0A1128 !important;
+    background: rgba(10, 17, 40, 0.03) !important;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration { display: none; }
+
+    &:focus {
+      outline: none;
+      border-color: $text-midnight; 
+      box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
+    }
+  }
+
+  .clear-icon {
+    position: absolute;
+    right: 0.6rem;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: rgba(10, 17, 40, 0.3);
+      transition: fill 0.2s;
+    }
+
+    &:hover svg {
+      fill: var(--app-danger, #d9534f);
+    }
+  }
+}
+
+/* --- MAP CONTENITORE --- */
+.map-container {
+  flex: 1; /* Riempe tutto lo spazio sotto la barra di ricerca */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Importantissimo per non coprire il menu hamburger di Ionic */
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* --- PULSANTE GEOLOCALIZZAZIONE FLUTTUANTE --- */
+.geo-btn {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000; /* Valore alto per stare sopra i layer di Leaflet */
+  width: 50px;
+  height: 50px;
+  background-color: var(--app-white, #FFFFFF);
+  border: 1px solid var(--app-text-midnight, #0A1128);
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(10, 17, 40, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--app-text-midnight, #0A1128);
+    transition: fill 0.2s ease;
+  }
+
+  &:hover {
+    background-color: var(--app-text-midnight, #0A1128);
+    transform: scale(1.05); /* Leggero zoom per far capire che è cliccabile */
+    
+    svg { 
+      fill: var(--app-white, #FFFFFF); 
+    }
+  }
+}
+
 /* === RESPONSIVE (TABLET E MOBILE) === */
 @media (max-width: 768px) {
   .topbar {

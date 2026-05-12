@@ -142,7 +142,7 @@ export class DashboardPage implements OnInit {
   getVariationData(product: any) {
     // 1. Se non c'è lo storico o c'è un solo prezzo, restituisci false
     if (!product.priceHistory || product.priceHistory.length < 2) {
-      return { hasVariation: false };
+      return { hasVariation: false, isFlat: false };
     }
 
     const history = product.priceHistory;
@@ -153,12 +153,25 @@ export class DashboardPage implements OnInit {
     // 3. Calcolo differenza e percentuale
     const diff = currentPrice - previousPrice;
     const percentage = (diff / previousPrice) * 100;
+    
+    // Formattiamo il valore a 1 decimale
+    const formattedValue = Math.abs(percentage).toFixed(1);
 
-    // 4. Restituiamo i dati per l'HTML
+    // FIX: Se non c'è differenza o la variazione è talmente minuscola da arrotondarsi a 0.0
+    if (diff === 0 || formattedValue === '0.0') {
+      return {
+        hasVariation: true,
+        isFlat: true, // NUOVO STATO: Invariato
+        value: '0.0%'
+      };
+    }
+
+    // 4. Restituiamo i dati per l'HTML (Salito o Sceso)
     return {
       hasVariation: true,
+      isFlat: false,
       isIncrease: diff > 0, // Se diff è maggiore di 0 il prezzo è salito
-      value: Math.abs(percentage).toFixed(1) + '%' // Valore assoluto (es. 0.2%) a un decimale
+      value: formattedValue + '%'
     };
   }
 
