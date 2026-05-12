@@ -91,6 +91,131 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
+/* ==========================================
+   STILI PAGINA FOTOCAMERA / BARCODE
+   ========================================== */
+
+.camera-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2rem;
+}
+
+.camera-card {
+  background-color: var(--app-white, #FFFFFF);
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
+  border: 1px solid var(--app-text-midnight, #0A1128);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.btn-scan {
+  background-color: var(--app-text-midnight, #0A1128);
+  color: var(--app-white, #FFFFFF);
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+  }
+
+  &:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+  color: rgba(10, 17, 40, 0.4);
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(10, 17, 40, 0.1);
+  }
+
+  span {
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+}
+
+.manual-input-wrapper {
+  text-align: left;
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--app-text-midnight, #0A1128);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 0.5rem;
+
+    input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--app-text-midnight, #0A1128);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--app-text-midnight, #0A1128);
+      outline: none;
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
+      }
+    }
+
+    .btn-submit {
+      background-color: transparent;
+      color: var(--app-text-midnight, #0A1128);
+      border: 1px solid var(--app-text-midnight, #0A1128);
+      padding: 0 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:not(:disabled):hover {
+        background-color: var(--app-text-midnight, #0A1128);
+        color: var(--app-white, #FFFFFF);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+
+
 /* === RESPONSIVE (TABLET E MOBILE) === */
 @media (max-width: 768px) {
   .topbar {
