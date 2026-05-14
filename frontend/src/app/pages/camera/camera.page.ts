@@ -70,23 +70,55 @@ export class CameraPage implements OnInit {
     }
   }
 
+
   // ==========================================
-  // STEP 2: RICERCA PRODOTTO & CONFERMA
+  // STEP 2: RICERCA PRODOTTO (DB LOCALE O API)
   // ==========================================
   async lookupProduct(barcode: string) {
-    // QUI IN FUTURO POTRAI CHIAMARE UN'API (es. OpenFoodFacts o il tuo DB)
-    // const response = await lastValueFrom(this.http.get(`.../api/lookup/${barcode}`));
-    
-    // Per ora creiamo un prodotto usando il codice a barre reale appena letto!
-    this.scannedProduct = {
-      name: `Prodotto Scansionato`,
-      barcode: barcode,
-      brand: 'Marca da definire',
-      image: 'https://via.placeholder.com/300x250?text=Foto+Prodotto' // Placeholder
-    };
-    
-    // Cambiamo la vista alla card "Prodotto Trovato"
-    this.step = 'found';
+    try {
+      this.showToast('Ricerca prodotto...', 'medium');
+
+      const apiUrl = `http://localhost:3000/api/scanned/lookup/${barcode}`;
+      const response: any = await lastValueFrom(this.http.get(apiUrl));
+
+      // CASO A: Il backend ha trovato il prodotto nel TUO database
+      if (response && response.foundInDb) {
+        this.showToast('Prodotto trovato nel nostro archivio!', 'success');
+        
+        // Mappiamo i dati dal tuo DB
+        this.scannedProduct = {
+          name: response.data.name || 'Nome non disponibile',
+          barcode: barcode,
+          brand: response.data.brand || 'Marca generica',
+          image: response.data.image || 'https://via.placeholder.com/300x250?text=Nessuna+Foto',
+          isExisting: true // Flag opzionale per ricordarci che era già nel DB
+        };
+        this.step = 'found';
+      } 
+      // CASO B: Il backend NON lo aveva, ma l'ha trovato su UPCitemdb
+      else if (response && response.code === 'OK' && response.items && response.items.length > 0) {
+        const productData = response.items[0];
+        
+        // Mappiamo i dati da UPCitemdb
+        this.scannedProduct = {
+          name: productData.title || 'Nome Prodotto non specificato',
+          barcode: barcode,
+          brand: productData.brand || 'Marca generica',
+          image: (productData.images && productData.images.length > 0) 
+                 ? productData.images[0] 
+                 : 'https://via.placeholder.com/300x250?text=Foto+Non+Disponibile'
+        };
+        this.step = 'found';
+      } 
+      // CASO C: Prodotto non trovato da nessuna parte
+      else {
+        this.showToast('Prodotto non trovato. Prova con un altro codice.', 'warning');
+      }
+
+    } catch (error) {
+      console.error('Errore durante la ricerca:', error);
+      this.showToast('Errore di connessione al server.', 'danger');
+    }
   }
 
   goToPrice() {
