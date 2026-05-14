@@ -27,23 +27,22 @@
           <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </button>
         <div class="title-text">
-          <h1>Fotocamera & Barcode</h1>
-          <p>Scansiona il codice a barre (EAN) di un prodotto o inseriscilo a mano.</p>
+          <h1>Fotocamera & Scansione</h1>
+          <p *ngIf="step === 'scan'">Scansiona il codice a barre di un prodotto nel punto vendita.</p>
+          <p *ngIf="step !== 'scan'">Completa i dati del prodotto rilevato.</p>
         </div>
       </div>
     </header>
 
     <section class="camera-section">
-      <div class="camera-card">
-        
+      
+      <div class="camera-card" *ngIf="step === 'scan'">
         <button class="btn-scan" (click)="startScan()">
           <svg viewBox="0 0 24 24"><path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/></svg>
           Inquadra Codice a Barre
         </button>
 
-        <div class="divider">
-          <span>OPPURE</span>
-        </div>
+        <div class="divider"><span>OPPURE</span></div>
 
         <div class="manual-input-wrapper">
           <label for="manualBarcode">Inserimento manuale EAN</label>
@@ -52,8 +51,66 @@
             <button class="btn-submit" (click)="submitManualBarcode()" [disabled]="!manualBarcode">Cerca</button>
           </div>
         </div>
-
       </div>
+
+      <ion-card *ngIf="step === 'found'" class="custom-card w-100">
+        <img [src]="scannedProduct.image" alt="Prodotto" class="product-img" />
+        <ion-card-header>
+          <ion-card-subtitle style="color: var(--app-text-midnight);">{{ scannedProduct.brand }}</ion-card-subtitle>
+          <ion-card-title style="color: var(--app-accent-eggplant); font-weight: 900;">{{ scannedProduct.name }}</ion-card-title>
+          <p style="color: #777; font-size: 0.9rem;">EAN: {{ scannedProduct.barcode }}</p>
+        </ion-card-header>
+        <ion-card-content>
+          <button class="btn-scan" (click)="goToPrice()">
+            Questo è il mio prodotto
+            <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          </button>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card *ngIf="step === 'price'" class="custom-card w-100">
+        <ion-card-header>
+          <ion-card-title style="color: var(--app-text-midnight); text-align: center;">Prezzo in negozio</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="manual-input-wrapper">
+            <label>A quanto lo vendono?</label>
+            <div class="input-group">
+              <input type="number" placeholder="Es: 499.99" [(ngModel)]="scannedProduct.price" style="font-size: 1.2rem; text-align: center;">
+            </div>
+          </div>
+          <button class="btn-scan" style="margin-top: 20px;" (click)="goToStoreSelection()">
+            Avanti
+          </button>
+        </ion-card-content>
+      </ion-card>
+
+      <div *ngIf="step === 'store'" class="store-step w-100">
+        <h2 style="color: var(--app-text-midnight); font-weight: bold; margin-bottom: 1rem;">Dove ti trovi?</h2>
+        
+        <div class="manual-input-wrapper">
+          <input type="text" placeholder="Filtra negozi vicini..." (input)="filterStores($event)" class="search-input">
+        </div>
+
+        <div *ngIf="isLoadingStores" class="loading-state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Ricerca tramite GPS...</p>
+        </div>
+
+        <div class="store-list" *ngIf="!isLoadingStores">
+          <div *ngFor="let store of filteredStores" class="store-item" (click)="selectStoreAndSave(store)">
+            <div class="store-info">
+              <h3>{{ store.name }}</h3>
+              <p>{{ store.address }}</p>
+            </div>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </div>
+          <div *ngIf="filteredStores.length === 0" class="no-results">
+            Nessun negozio rilevato in zona.
+          </div>
+        </div>
+      </div>
+
     </section>
   </main>
 </div>

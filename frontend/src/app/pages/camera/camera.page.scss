@@ -214,7 +214,91 @@ body {
   }
 }
 
+/* ==========================================
+   AGGIUNTE PER IL WIZARD (STEP 2, 3 E 4)
+   ========================================== */
 
+.w-100 {
+  width: 100%;
+  max-width: 500px;
+}
+
+.custom-card {
+  background-color: var(--app-white, #FFFFFF);
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
+  border: 1px solid var(--app-text-midnight, #0A1128);
+  overflow: hidden;
+
+  .product-img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    padding: 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--app-border-light);
+  }
+}
+
+.store-step {
+  .search-input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--app-text-midnight, #0A1128);
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .loading-state {
+    text-align: center;
+    color: var(--app-text-midnight);
+    margin: 2rem 0;
+    
+    ion-spinner { margin-bottom: 10px; }
+  }
+
+  .store-list {
+    max-height: 400px;
+    overflow-y: auto;
+    
+    .store-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem;
+      background: var(--app-white);
+      border: 1px solid var(--app-border-light);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--app-text-midnight);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      }
+
+      .store-info h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+        color: var(--app-accent-eggplant);
+      }
+      .store-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: rgba(10, 17, 40, 0.6);
+      }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(10, 17, 40, 0.5);
+    }
+  }
+}
 
 /* === RESPONSIVE (TABLET E MOBILE) === */
 @media (max-width: 768px) {

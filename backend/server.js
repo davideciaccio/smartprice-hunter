@@ -73,3 +73,6 @@ const accountRoutes = require('./routes/account');
 // In questo modo, tutte le rotte definite in accountRoutes (come /update-username, /change-password, /delete)
 // saranno accessibili tramite URL come /api/account/update-username, /api/account/change-password, ecc."
 app.use('/api/account', accountRoutes);
+
+const scannedProductRoutes = require('./routes/scannedProduct')
+app.use('/api/scanned', scannedProductRoutes);
