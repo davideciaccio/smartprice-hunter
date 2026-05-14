@@ -7,5 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/save', authMiddleware, scanController.saveScannedProduct);
 router.get('/', authMiddleware, scanController.getScannedProducts);
 router.get('/lookup/:barcode', scanController.lookupBarcode);
+router.get('/search', scanController.searchProducts);
+router.get('/locations/:barcode', scanController.getProductLocations);
 
 module.exports = router;

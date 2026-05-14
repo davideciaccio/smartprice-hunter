@@ -6,6 +6,16 @@ exports.saveScannedProduct = async (req, res) => {
     // Estraiamo i dati che arrivano dal frontend (camera.page.ts)
     const { barcode, name, brand, image, price, store } = req.body;
 
+    // 1. RIFORMATTIAMO LO STORE PER FARLO COMBACIARE COL TUO SCHEMA DB
+    const storeForDb = {
+      name: store.name,
+      address: store.address,
+      coordinates: {
+        lat: store.lat, // Prende la latitudine dal frontend
+        lng: store.lng  // Prende la longitudine dal frontend
+      }
+    };
+
     /**
      * CORREZIONE LOGICA:
      * Il filtro ora cerca la combinazione UNICA di Barcode + Nome Negozio + Indirizzo Negozio.
@@ -24,7 +34,7 @@ exports.saveScannedProduct = async (req, res) => {
           brand: brand,
           image: image,
           currentPrice: price, // Aggiorna il prezzo specifico per questo binomio prodotto-negozio
-          store: store, // Salva l'oggetto store completo (lat, lng, address, name)
+          store: storeForDb, // Salva l'oggetto store completo (lat, lng, address, name)
           updatedAt: new Date() // Buona pratica per tracciare l'ultimo aggiornamento prezzo
         }
       },
@@ -84,3 +94,42 @@ exports.lookupBarcode = async (req, res) => {
   }
 };
 
+// Aggiungi questo in backend/controllers/scanController.js
+exports.searchProducts = async (req, res) => {
+  try {
+    const searchQuery = req.query.q;
+    
+    if (!searchQuery || searchQuery.length < 2) {
+      return res.status(200).json([]);
+    }
+
+    // Creiamo una RegExp per una ricerca "case-insensitive" (ignora maiuscole/minuscole)
+    const regex = new RegExp(searchQuery, 'i');
+
+    // Cerchiamo nel DB: il NOME deve contenere il testo OPPURE il BARCODE deve contenerlo
+    const products = await ScannedProduct.find({
+      $or: [
+        { name: regex },
+        { barcode: regex }
+      ]
+    }).limit(10); // Limitiamo a 10 risultati per non appesantire la tendina
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Errore durante la ricerca:', error);
+    res.status(500).json({ error: 'Errore di ricerca' });
+  }
+};
+
+// backend/controllers/scanController.js
+exports.getProductLocations = async (req, res) => {
+  try {
+    const barcode = req.params.barcode;
+    // Troviamo tutte le occorrenze di quel prodotto nei vari negozi
+    const locations = await ScannedProduct.find({ barcode: barcode });
+    res.status(200).json(locations);
+  } catch (error) {
+    console.error('Errore recupero posizioni:', error);
+    res.status(500).json({ error: 'Errore del server' });
+  }
+};

@@ -215,6 +215,76 @@ body {
       fill: var(--app-danger, #d9534f);
     }
   }
+
+  /* --- STILI TENDINA AUTOCOMPLETAMENTO --- */
+  .autocomplete-dropdown {
+    position: absolute;
+    top: 100%; // Si posiziona esattamente sotto l'input
+    left: 0;
+    width: 100%;
+    background-color: var(--app-white, #FFFFFF);
+    border: 1px solid var(--app-text-midnight, #0A1128);
+    border-top: none;
+    border-radius: 0 0 8px 8px; // Arrotonda solo gli angoli in basso
+    box-shadow: 0 8px 16px rgba(10, 17, 40, 0.15);
+    z-index: 2000; // Deve stare sopra la mappa di Leaflet
+    max-height: 350px;
+    overflow-y: auto;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      .autocomplete-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--app-border-light, #E2E8F0);
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: rgba(10, 17, 40, 0.05); // Effetto hover azzurrino
+        }
+
+        .product-thumb {
+          width: 40px;
+          height: 40px;
+          object-fit: contain;
+          border-radius: 4px;
+          background: #f8f9fa;
+        }
+
+        .product-info {
+          display: flex;
+          flex-direction: column;
+
+          h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--app-text-midnight, #0A1128);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 380px; // Evita che titoli lunghi rompano il layout
+          }
+
+          .product-brand {
+            font-size: 0.8rem;
+            color: rgba(10, 17, 40, 0.6);
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+  }
 }
 
 /* --- MAP CONTENITORE --- */

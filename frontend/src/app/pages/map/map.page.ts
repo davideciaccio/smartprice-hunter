@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http'; // IMPORTANTE: Aggiunto HttpClient
+import { lastValueFrom } from 'rxjs';
 import * as L from 'leaflet';
 
 @Component({
@@ -16,13 +18,17 @@ export class MapPage implements OnInit, AfterViewInit {
   isSidebarActive: boolean = false; 
   searchQuery: string = '';
   isSearching: boolean = false;
-  private storeMarkers: any[] = []; // Salva i pin dei negozi per poterli cancellare
+  private storeMarkers: any[] = []; 
   hasSearchedNearby: boolean = false;
   
-  private map: any;
-  private userMarker: any; // Mantiene in memoria l'indicatore rosso
+  // NUOVE VARIABILI PER LA TENDINA
+  searchResults: any[] = []; 
+  isSearchingDb: boolean = false;
 
-  constructor() {}
+  private map: any;
+  private userMarker: any;
+
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {}
 
@@ -106,6 +112,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
   clearSearch() {
     this.searchQuery = '';
+    this.searchResults = [];
   }
 
   // ==========================================
@@ -197,4 +204,106 @@ export class MapPage implements OnInit, AfterViewInit {
     this.hasSearchedNearby = false; // Nasconde questo bottone
     this.locateUser(); // Riporta la visuale sul "Tu sei qui" dell'utente
   }
+ 
+  // ==========================================
+  // NUOVO: LOGICA RICERCA IN TEMPO REALE
+  // ==========================================
+  async onSearchInput() {
+    const query = this.searchQuery.trim();
+    
+    // Se l'utente ha cancellato il testo o scritto meno di 2 caratteri, nascondi la tendina
+    if (query.length < 2) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.isSearchingDb = true;
+
+    try {
+      // Chiama il tuo backend Node.js
+      const url = `http://localhost:3000/api/scanned/search?q=${encodeURIComponent(query)}`;
+      const response: any = await lastValueFrom(this.http.get(url));
+      
+      this.searchResults = response; // Popola la tendina con i risultati
+    } catch (error) {
+      console.error('Errore durante la ricerca nel DB:', error);
+      this.searchResults = [];
+    } finally {
+      this.isSearchingDb = false;
+    }
+  }
+
+  // ==========================================
+  // SELEZIONE PRODOTTO E RENDER DEI PIN SULLA MAPPA
+  // ==========================================
+  async selectProduct(product: any) {
+    // 1. Aggiorna l'input testuale e chiude la tendina
+    this.searchQuery = product.name; 
+    this.searchResults = []; 
+
+    // 2. Pulisce la mappa dai vecchi marker
+    this.clearStoreMarkers(); 
+
+    try {
+      this.isSearchingDb = true; // Mostriamo un feedback (opzionale)
+
+      // 3. Chiediamo al backend tutte le posizioni e i prezzi per QUESTO barcode
+      const url = `http://localhost:3000/api/scanned/locations/${product.barcode}`;
+      const locations: any = await lastValueFrom(this.http.get(url));
+
+      if (locations && locations.length > 0) {
+        
+        // 4. Cicliamo i risultati per creare i pin
+        locations.forEach((loc: any) => {
+          // Controlliamo che le coordinate esistano (per evitare errori in console)
+          if (loc.store && loc.store.coordinates && loc.store.coordinates.lat && loc.store.coordinates.lng) {
+            
+            const formattedPrice = (typeof loc.currentPrice === 'number') 
+                                   ? loc.currentPrice.toFixed(2) 
+                                   : 'N/D';
+            
+            // Crea il pin
+            const marker = L.marker([loc.store.coordinates.lat, loc.store.coordinates.lng]).addTo(this.map);
+            
+            // Costruisce la Card HTML per il Popup
+            const popupContent = `
+              <div style="text-align: center; min-width: 150px;">
+                <strong style="color: #0A1128; font-size: 1.1rem; display: block; margin-bottom: 2px;">${loc.store.name}</strong>
+                <span style="color: #666; font-size: 0.85rem;">${loc.store.address}</span>
+                <div style="margin-top: 10px; background: #e0f7fa; padding: 8px; border-radius: 6px; border: 1px solid #b2ebf2;">
+                  <span style="color: #00796b; font-size: 1.3rem; font-weight: 900;">€${formattedPrice}</span>
+                </div>
+              </div>
+            `;
+            
+            marker.bindPopup(popupContent);
+            
+            // Salviamo il marker nell'array così clearStoreMarkers() potrà rimuoverlo al prossimo giro
+            this.storeMarkers.push(marker); 
+          }
+        });
+
+        // 5. Centra e fa lo zoom della mappa per inquadrare tutti i pin appena creati!
+        if (this.storeMarkers.length > 0) {
+          const group = new L.FeatureGroup(this.storeMarkers);
+          this.map.fitBounds(group.getBounds().pad(0.2)); // pad(0.2) lascia un po' di margine ai bordi dello schermo
+          
+          // Apre automaticamente il popup se c'è un solo risultato
+          if (this.storeMarkers.length === 1) {
+            this.storeMarkers[0].openPopup();
+          }
+        }
+
+      } else {
+        alert('Non ci sono ancora prezzi registrati per questo prodotto sulla mappa.');
+      }
+
+    } catch (error) {
+      console.error('Errore nel recupero delle posizioni del prodotto:', error);
+      alert('Errore di connessione al server.');
+    } finally {
+      this.isSearchingDb = false;
+    }
+  }
+
 }
