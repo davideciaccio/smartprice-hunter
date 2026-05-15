@@ -1,0 +1,291 @@
+$bg-pale-blue: var(--app-bg-pale-blue);
+$text-midnight: var(--app-text-midnight, #0A1128);
+$white: var(--app-white, #FFFFFF);
+$accent-eggplant: var(--app-accent-eggplant, #4A235A);
+$border-light: var(--app-border-light, #E2E8F0);
+$danger: var(--app-danger, #d9534f);
+$success: var(--app-success, #28a745);
+$warning: var(--app-warning, #ffc107);
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: $white; 
+  color: $text-midnight;
+  overflow-x: hidden;
+}
+
+// ==========================================
+// 1. LAYOUT PRINCIPALE E SIDEBAR (Stile SmartPrice)
+// ==========================================
+.dashboard-layout { display: flex; height: 100vh; }
+
+.sidebar {
+  width: 250px;
+  background-color: $text-midnight;
+  display: flex;
+  flex-direction: column;
+
+  .brand {
+    position: sticky; top: 0; z-index: 10;
+    padding: 1.5rem; background-color: $white; 
+    border-bottom: 1px solid $border-light;
+    display: flex; justify-content: center; align-items: center;
+    .sidebar-logo { max-width: 80%; height: auto; object-fit: contain; }
+  }
+
+  .nav-menu {
+    flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 1rem 0;
+    ul {
+      list-style: none;
+      li {
+        &.nav-divider { height: 1px; background-color: rgba(255, 255, 255, 0.1); margin: 1rem 0; }
+        a {
+          display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem;
+          color: $white; opacity: 0.65; text-decoration: none; font-weight: 500;
+          font-size: 0.95rem; transition: all 0.2s ease; cursor: pointer;
+          .nav-icon { width: 20px; height: 20px; fill: currentColor; transition: fill 0.2s ease; }
+          &:hover { background-color: rgba(255, 255, 255, 0.05); opacity: 1; }
+        }
+        &.active a {
+          background-color: rgba(255, 255, 255, 0.1); 
+          color: $white; opacity: 1; border-left: 4px solid $white; font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// 2. MAIN CONTENT E TOPBAR
+// ==========================================
+.main-content {
+  flex: 1; padding: 2rem; overflow-y: auto;
+  background-color: $white; 
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .title-area {
+    h1 {
+      color: $text-midnight;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+    p {
+      color: rgba(10, 17, 40, 0.6);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+// ==========================================
+// 3. SEZIONE ADMIN (Ricerca e Card Utenti)
+// ==========================================
+.admin-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-controls {
+  margin-bottom: 1.5rem;
+  
+  /* --- BARRA DI RICERCA (Stile Dashboard Esatto) --- */
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+
+    .search-icon {
+      position: absolute;
+      left: 0.6rem;
+      width: 18px;
+      height: 18px;
+      fill: rgba(10, 17, 40, 0.4);
+      cursor: pointer;
+      z-index: 2;
+      transition: fill 0.2s;
+
+      &:hover { fill: $accent-eggplant; }
+    }
+
+    .search-input {
+      padding: 0.5rem 1rem 0.5rem 2.2rem; 
+      border: 1px solid $text-midnight;
+      border-radius: 6px;
+      width: 100%;
+      color: $text-midnight !important;
+      background: rgba(10, 17, 40, 0.03) !important;
+      appearance: none; outline: none;
+
+      &:focus {
+        border-color: $text-midnight; 
+        box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
+      }
+    }
+  }
+}
+
+.loading-state {
+  text-align: center; padding: 3rem; color: $text-midnight;
+  ion-spinner { margin-bottom: 1rem; }
+}
+
+/* --- TABELLA / LISTA UTENTI --- */
+.users-card {
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
+  border: 1px solid $text-midnight; /* Bordo Identico alla Dashboard */
+  overflow: hidden;
+
+  .user-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 100px;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $border-light;
+    transition: background-color 0.2s;
+
+    &:last-child { border-bottom: none; }
+    &:hover:not(.header-row) { background-color: rgba(10, 17, 40, 0.02); }
+
+    &.header-row {
+      background-color: rgba(10, 17, 40, 0.04);
+      color: $text-midnight;
+      font-weight: 600;
+      border-bottom: 2px solid $text-midnight;
+      font-size: 0.85rem;
+    }
+
+    .col-info {
+      display: flex; align-items: center; gap: 1rem;
+      
+      .user-avatar {
+        width: 40px; height: 40px; border-radius: 6px; /* Quadrato smussato come le immagini prodotto */
+        background-color: rgba(10, 17, 40, 0.05); 
+        color: $text-midnight;
+        border: 1px solid $border-light;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1.1rem;
+      }
+      .user-details {
+        display: flex; flex-direction: column;
+        strong { color: $text-midnight; font-size: 0.95rem; font-weight: 600; }
+        span { color: rgba(10, 17, 40, 0.6); font-size: 0.8rem; }
+      }
+    }
+
+    /* --- PULSANTI DI AZIONE (Stile Dashboard) --- */
+    .col-actions {
+      display: flex; gap: 0.5rem; justify-content: flex-end;
+      
+      .action-btn {
+        width: 36px; height: 36px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s ease;
+        border: 1px solid transparent;
+        
+        svg { width: 18px; height: 18px; fill: currentColor; }
+        &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        &.btn-ban {
+          background-color: rgba(255, 193, 7, 0.1);
+          color: #d39e00; // Warning text color
+          border-color: rgba(255, 193, 7, 0.3);
+
+          &.is-banned { 
+            background-color: rgba(40, 167, 69, 0.1); 
+            color: $success; 
+            border-color: rgba(40, 167, 69, 0.3);
+          }
+
+          &:not(:disabled):hover { 
+            background-color: $warning; color: $white; transform: scale(1.05); 
+            svg { fill: $text-midnight; }
+          }
+          &.is-banned:not(:disabled):hover { 
+            background-color: $success; color: $white; transform: scale(1.05); 
+            svg { fill: $white; }
+          }
+        }
+
+        &.btn-delete {
+          background-color: rgba(211, 47, 47, 0.1);
+          color: $danger;
+          border-color: rgba(211, 47, 47, 0.3);
+
+          &:not(:disabled):hover { 
+            background-color: $danger; color: $white; transform: scale(1.05); 
+          }
+        }
+      }
+    }
+  }
+
+  .no-results {
+    padding: 3rem; text-align: center; color: rgba(10, 17, 40, 0.5); font-style: italic;
+  }
+}
+
+/* ==========================================
+   4. BADGE E STATI
+   ========================================== */
+.badge {
+  padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+  background-color: rgba(10, 17, 40, 0.05); color: $text-midnight; border: 1px solid $border-light;
+
+  &.badge-admin { background-color: rgba(74, 35, 90, 0.1); color: $accent-eggplant; border-color: rgba(74, 35, 90, 0.2);}
+  &.badge-success { background-color: rgba(40, 167, 69, 0.1); color: $success; border-color: rgba(40, 167, 69, 0.2);}
+  &.badge-danger { background-color: rgba(217, 83, 79, 0.1); color: $danger; border-color: rgba(217, 83, 79, 0.2);}
+}
+
+// ==========================================
+// 5. GESTIONE MENU MOBILE E OVERLAY
+// ==========================================
+.mobile-menu-toggle {
+  display: none; background: transparent; border: none; cursor: pointer; padding: 0.5rem;
+  svg { width: 28px; height: 28px; fill: $text-midnight; pointer-events: none; }
+}
+
+.sidebar-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+  background-color: rgba(10, 17, 40, 0.4); z-index: 900; backdrop-filter: blur(2px);
+  opacity: 0; transition: opacity 0.3s ease;
+  &.active { display: block; opacity: 1; }
+}
+
+// ==========================================
+// 6. MEDIA QUERIES (MOBILE E TABLET)
+// ==========================================
+@media (max-width: 768px) {
+  .topbar {
+    .title-area { display: flex; align-items: center; gap: 0.5rem; }
+    .mobile-menu-toggle { display: block; }
+  }
+
+  .sidebar {
+    position: fixed !important; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    &.active { transform: translateX(0) !important; }
+  }
+
+  .main-content { padding: 1rem; }
+
+  .users-card .user-row {
+    grid-template-columns: 1fr; gap: 1rem; position: relative;
+    
+    &.header-row { display: none; } 
+    
+    .col-actions { position: absolute; top: 1.2rem; right: 1.5rem; }
+    .col-role, .col-status { display: inline-block; margin-right: 0.5rem; margin-top: 0.5rem; }
+  }
+}

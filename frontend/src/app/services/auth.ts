@@ -27,6 +27,13 @@ export class AuthService {
           // Salviamo il token e l'id utente nella memoria del browser
           localStorage.setItem('token', response.token);
           localStorage.setItem('userId', response.userId);
+
+          const userObj = {
+            username: response.username,
+            role: response.role // Adesso Angular sa se è admin o user!
+          };
+          
+          localStorage.setItem('user', JSON.stringify(userObj));
         }
       })
     );
@@ -36,6 +43,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('user');
   }
 
   // Controlla se l'utente è loggato verificando la presenza del token

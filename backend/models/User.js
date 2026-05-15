@@ -1,3 +1,5 @@
+// FILE: backend/models/User.js 
+
 // la funzione require() è la funzione predefinita per importare pacchetti, librerie o altri file.
 // prendiamo la libreria mongoose dalla cartella node_modules
 // salva tutto in una costante chiamata mongoose
@@ -14,9 +16,8 @@ const mongoose = require('mongoose');
  */
 
 // Definiamo lo schema Utente
-
 const userSchema = new mongoose.Schema({
-    username: { 
+  username: { 
     type: String, 
     required: true, 
     unique: true // Non possono esserci due username uguali
@@ -29,11 +30,22 @@ const userSchema = new mongoose.Schema({
   password: { 
     type: String, 
     required: true 
+  },
+  
+  // --- NUOVI CAMPI PER LA GESTIONE ADMIN E SICUREZZA ---
+  role: { 
+    type: String, 
+    enum: ['user', 'admin'], 
+    default: 'user', // Tutti i nuovi registrati sono utenti standard di default
+    required: true
+  },
+  isBanned: { 
+    type: Boolean, 
+    default: false // Di default un utente non è bannato
   }
 }, { 
-  timestamps: true // Aggiunge in automatico createdAt e updatedAt
+  timestamps: true // Aggiunge in automatico createdAt e updatedAt nel database
 });
-
 
 // In Node.js, ogni file è considerato un modulo separato. 
 // Immagina ogni file come una scatola chiusa: le variabili e le funzioni create dentro un file non sono visibili agli altri file
@@ -41,4 +53,3 @@ const userSchema = new mongoose.Schema({
 // module è un oggetto speciale che Node.js mette a disposizione 
 // Esportiamo il modello per poterlo usare nel resto dell'app
 module.exports = mongoose.model('User', userSchema);
-

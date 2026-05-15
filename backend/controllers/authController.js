@@ -89,13 +89,15 @@ const login = async (req, res) => {
       Questo limita i danni nel caso in cui qualcuno rubi il token all'utente.
     */
     const token = jwt.sign(
-      { userId: user._id },     // Payload (dati pubblici ma firmati)
+      { userId: user._id,
+        role: user.role
+       },
       process.env.JWT_SECRET,   // La nostra chiave segreta
       { expiresIn: '24h' }       // Scadenza del token
     );
 
     // Restituiamo il token e i dati base dell'utente al frontend
-    res.json({ token, userId: user._id, username: user.username });
+    res.json({ token, userId: user._id, username: user.username, role: user.role });
 
   } catch (error) {
     console.error(error);

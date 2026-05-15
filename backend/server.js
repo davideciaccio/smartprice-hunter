@@ -76,3 +76,6 @@ app.use('/api/account', accountRoutes);
 
 const scannedProductRoutes = require('./routes/scannedProduct')
 app.use('/api/scanned', scannedProductRoutes);
+
+const adminRoutes = require('./routes/admin'); // Importa le rotte admin
+app.use('/api/admin', adminRoutes);
