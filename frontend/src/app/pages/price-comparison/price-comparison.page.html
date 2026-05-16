@@ -1,0 +1,41 @@
+<div class="dashboard-layout">
+    
+  <aside class="sidebar" [class.active]="isSidebarActive">
+    <div class="brand">
+      <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="sidebar-logo" />
+    </div>
+    <nav class="nav-menu">
+      <ul>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><a routerLink="/dashboard"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> Sommario</a></li>
+        <li routerLinkActive="active"><a routerLink="/price-history"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg> Storico prezzi</a></li>
+        <li routerLinkActive="active"><a routerLink="/price-comparison"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 7h12V4l5 4-5 4V9H4V7zm16 8H8v-3l-5 4 5 4v-3h12v-2z"/></svg> Confronto prezzi</a></li>
+        <li routerLinkActive="active"><a routerLink="/map"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Mappa</a></li>
+        <li routerLinkActive="active"><a routerLink="/camera"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg> Fotocamera</a></li>
+        <li routerLinkActive="active"><a routerLink="/notices"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg> Avvisi</a></li>
+        <li class="nav-divider"></li>
+        <li routerLinkActive="active"><a routerLink="/manage-account"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Gestione account</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="sidebar-overlay" [class.active]="isSidebarActive" (click)="closeSidebar()"></div>
+
+  <main class="main-content">
+    
+    <header class="topbar">
+      <div class="title-area">
+        <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <div class="title-text">
+          <h1>Confronto Prezzi</h1>
+          <p>Seleziona un prodotto per confrontare le tariffe nei vari punti vendita.</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="comparison-section">
+      </section>
+
+  </main>
+</div>

@@ -113,6 +113,9 @@ export class MapPage implements OnInit, AfterViewInit {
   clearSearch() {
     this.searchQuery = '';
     this.searchResults = [];
+
+    this.clearStoreMarkers(); // Rimuove i marker dei negozi
+    this.locateUser(); // Riporta lo zoom e il focus sulla posizione GPS dell'utente
   }
 
   // ==========================================
@@ -223,8 +226,15 @@ export class MapPage implements OnInit, AfterViewInit {
       // Chiama il tuo backend Node.js
       const url = `http://localhost:3000/api/scanned/search?q=${encodeURIComponent(query)}`;
       const response: any = await lastValueFrom(this.http.get(url));
+
+      // Teniamo solo la prima occorrenza per ogni codice a barre
+      const uniqueProducts = response.filter((value: any, index: number, self: any[]) =>
+        index === self.findIndex((t) => (
+          t.barcode === value.barcode
+        ))
+      );
       
-      this.searchResults = response; // Popola la tendina con i risultati
+      this.searchResults = uniqueProducts;
     } catch (error) {
       console.error('Errore durante la ricerca nel DB:', error);
       this.searchResults = [];
@@ -233,77 +243,106 @@ export class MapPage implements OnInit, AfterViewInit {
     }
   }
 
+ 
   // ==========================================
-  // SELEZIONE PRODOTTO E RENDER DEI PIN SULLA MAPPA
+  // SELEZIONE PRODOTTO E RENDER PIN (FIX 10KM)
   // ==========================================
   async selectProduct(product: any) {
-    // 1. Aggiorna l'input testuale e chiude la tendina
     this.searchQuery = product.name; 
     this.searchResults = []; 
-
-    // 2. Pulisce la mappa dai vecchi marker
     this.clearStoreMarkers(); 
 
-    try {
-      this.isSearchingDb = true; // Mostriamo un feedback (opzionale)
+    // Verifichiamo che il GPS sia attivo, altrimenti non possiamo calcolare la distanza
+    if (!navigator.geolocation) {
+      alert('Geolocalizzazione non supportata dal browser. Impossibile calcolare i 10km.');
+      return;
+    }
 
-      // 3. Chiediamo al backend tutte le posizioni e i prezzi per QUESTO barcode
-      const url = `http://localhost:3000/api/scanned/locations/${product.barcode}`;
-      const locations: any = await lastValueFrom(this.http.get(url));
+    this.isSearchingDb = true;
 
-      if (locations && locations.length > 0) {
-        
-        // 4. Cicliamo i risultati per creare i pin
-        locations.forEach((loc: any) => {
-          // Controlliamo che le coordinate esistano (per evitare errori in console)
-          if (loc.store && loc.store.coordinates && loc.store.coordinates.lat && loc.store.coordinates.lng) {
-            
-            const formattedPrice = (typeof loc.currentPrice === 'number') 
-                                   ? loc.currentPrice.toFixed(2) 
-                                   : 'N/D';
-            
-            // Crea il pin
-            const marker = L.marker([loc.store.coordinates.lat, loc.store.coordinates.lng]).addTo(this.map);
-            
-            // Costruisce la Card HTML per il Popup
-            const popupContent = `
-              <div style="text-align: center; min-width: 150px;">
-                <strong style="color: #0A1128; font-size: 1.1rem; display: block; margin-bottom: 2px;">${loc.store.name}</strong>
-                <span style="color: #666; font-size: 0.85rem;">${loc.store.address}</span>
-                <div style="margin-top: 10px; background: #e0f7fa; padding: 8px; border-radius: 6px; border: 1px solid #b2ebf2;">
-                  <span style="color: #00796b; font-size: 1.3rem; font-weight: 900;">€${formattedPrice}</span>
-                </div>
-              </div>
-            `;
-            
-            marker.bindPopup(popupContent);
-            
-            // Salviamo il marker nell'array così clearStoreMarkers() potrà rimuoverlo al prossimo giro
-            this.storeMarkers.push(marker); 
-          }
-        });
+    // Otteniamo la posizione dell'utente
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+      
+      // Creiamo l'oggetto Coordinate di Leaflet per l'utente
+      const userLatLng = L.latLng(userLat, userLng);
 
-        // 5. Centra e fa lo zoom della mappa per inquadrare tutti i pin appena creati!
-        if (this.storeMarkers.length > 0) {
-          const group = new L.FeatureGroup(this.storeMarkers);
-          this.map.fitBounds(group.getBounds().pad(0.2)); // pad(0.2) lascia un po' di margine ai bordi dello schermo
+      try {
+        const url = `http://localhost:3000/api/scanned/locations/${product.barcode}`;
+        const locations: any = await lastValueFrom(this.http.get(url));
+
+        if (locations && locations.length > 0) {
           
-          // Apre automaticamente il popup se c'è un solo risultato
-          if (this.storeMarkers.length === 1) {
-            this.storeMarkers[0].openPopup();
+          let foundInRadius = false; // Variabile per capire se abbiamo trovato qualcosa vicino
+
+          locations.forEach((loc: any) => {
+            if (loc.store && loc.store.coordinates && loc.store.coordinates.lat && loc.store.coordinates.lng) {
+              
+              // Creiamo l'oggetto Coordinate per il negozio
+              const storeLatLng = L.latLng(loc.store.coordinates.lat, loc.store.coordinates.lng);
+              
+              // TASK 2 FIX: Calcoliamo la distanza in metri tra l'utente e il negozio
+              const distanceInMeters = userLatLng.distanceTo(storeLatLng);
+
+              // Se il negozio è entro i 10.000 metri (10km), lo disegniamo!
+              if (distanceInMeters <= 10000) {
+                foundInRadius = true;
+
+                const formattedPrice = (typeof loc.currentPrice === 'number') 
+                                       ? loc.currentPrice.toFixed(2) 
+                                       : 'N/D';
+                
+                const marker = L.marker([loc.store.coordinates.lat, loc.store.coordinates.lng]).addTo(this.map);
+                
+                const popupContent = `
+                  <div style="text-align: center; min-width: 150px;">
+                    <strong style="color: #0A1128; font-size: 1.1rem; display: block; margin-bottom: 2px;">${loc.store.name}</strong>
+                    <span style="color: #666; font-size: 0.85rem;">${loc.store.address}</span>
+                    <div style="margin-top: 10px; background: #e0f7fa; padding: 8px; border-radius: 6px; border: 1px solid #b2ebf2;">
+                      <span style="color: #00796b; font-size: 1.3rem; font-weight: 900;">€${formattedPrice}</span>
+                    </div>
+                  </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                this.storeMarkers.push(marker); 
+              }
+            }
+          });
+
+          // Mostriamo i pin sulla mappa
+          if (this.storeMarkers.length > 0) {
+            const group = new L.FeatureGroup(this.storeMarkers);
+            this.map.fitBounds(group.getBounds().pad(0.2)); 
+            
+            if (this.storeMarkers.length === 1) {
+              this.storeMarkers[0].openPopup();
+            }
           }
+
+          // Se il DB aveva il prodotto, ma nessun negozio era nel raggio di 10km:
+          if (!foundInRadius) {
+            alert(`Abbiamo trovato l'iPhone, ma nessun negozio nel raggio di 10 km da te lo ha attualmente in vendita a sistema.`);
+            // Riportiamo la mappa sull'utente
+            this.locateUser(); 
+          }
+
+        } else {
+          alert('Non ci sono ancora prezzi registrati per questo prodotto sulla mappa.');
         }
 
-      } else {
-        alert('Non ci sono ancora prezzi registrati per questo prodotto sulla mappa.');
+      } catch (error) {
+        console.error('Errore nel recupero delle posizioni:', error);
+        alert('Errore di connessione al server.');
+      } finally {
+        this.isSearchingDb = false;
       }
-
-    } catch (error) {
-      console.error('Errore nel recupero delle posizioni del prodotto:', error);
-      alert('Errore di connessione al server.');
-    } finally {
+      
+    }, (error) => {
       this.isSearchingDb = false;
-    }
+      alert('Attiva il GPS per poter cercare i prodotti vicini a te!');
+    });
   }
 
 }

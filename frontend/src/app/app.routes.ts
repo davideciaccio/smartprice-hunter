@@ -44,4 +44,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin-users/admin-users.page').then( m => m.AdminUsersPage),
     canActivate: [AdminGuard]
   },
+  {
+    path: 'price-comparison',
+    loadComponent: () => import('./pages/price-comparison/price-comparison.page').then( m => m.PriceComparisonPage)
+  },
 ];
