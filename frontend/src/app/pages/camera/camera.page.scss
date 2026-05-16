@@ -183,6 +183,7 @@ body {
       border: 1px solid var(--app-text-midnight, #0A1128);
       border-radius: 8px;
       font-size: 1rem;
+      background-color: #FFFFFF !important;
       color: var(--app-text-midnight, #0A1128);
       outline: none;
 
@@ -235,7 +236,7 @@ body {
     height: 250px;
     object-fit: contain;
     padding: 20px;
-    background: #f8f9fa;
+    background-color: #FFFFFF !important;
     border-bottom: 1px solid var(--app-border-light);
   }
 }
@@ -245,6 +246,7 @@ body {
     width: 100%;
     padding: 1rem;
     border: 1px solid var(--app-text-midnight, #0A1128);
+    background-color: #FFFFFF !important;
     border-radius: 8px;
     font-size: 1rem;
     margin-bottom: 1.5rem;
