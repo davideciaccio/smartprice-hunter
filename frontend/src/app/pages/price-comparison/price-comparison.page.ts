@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { IonicModule, ToastController, ActionSheetController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { ComparisonService } from '../../services/comparison.service'; // Assicurati che il path sia corretto
+import { ComparisonService } from '../../services/comparison.service'; 
 
 @Component({
   selector: 'app-price-comparison',
@@ -14,14 +14,16 @@ import { ComparisonService } from '../../services/comparison.service'; // Assicu
 })
 export class PriceComparisonPage implements OnInit {
   isSidebarActive: boolean = false;
-
-  // Variabili per gestire i dati
+  searchQuery: string = '';
+  filteredProducts: any[] = [];
+  
   localProducts: any[] = [];
   isLoadingLocal: boolean = true;
 
   constructor(
     private comparisonService: ComparisonService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private actionSheetController: ActionSheetController // <-- Aggiunto controller per il sort
   ) {}
 
   ngOnInit() {
@@ -37,10 +39,8 @@ export class PriceComparisonPage implements OnInit {
   async loadLocalProducts() {
     this.isLoadingLocal = true;
     try {
-      // Chiama la rotta /api/scanned
       const data = await this.comparisonService.getLocalProducts();
       
-      // FIX DUPLICATI: Teniamo solo la prima occorrenza per ogni prodotto (basandoci sul barcode o sul nome)
       const uniqueProducts = data.filter((value: any, index: number, self: any[]) =>
         index === self.findIndex((t) => (
           (t.barcode && t.barcode === value.barcode) || 
@@ -49,8 +49,8 @@ export class PriceComparisonPage implements OnInit {
       );
 
       this.localProducts = uniqueProducts;
+      this.filteredProducts = [...this.localProducts];
       
-      // TRUCCO UX/UI: Aggiungiamo dinamicamente le proprietà per gestire lo stato della UI
       this.localProducts.forEach(p => {
         p.onlineCompetitors = [];       
         p.isSearchingOnline = false;    
@@ -74,17 +74,12 @@ export class PriceComparisonPage implements OnInit {
     product.isSearchingOnline = true; 
     
     try {
-      // FIX GOOGLE SHOPPING: Diamo priorità assoluta al NOME del prodotto.
-      // Google Shopping è un motore semantico e lavora molto meglio con "Apple iPhone 17 Pro Max" 
-      // piuttosto che con un numero "019595...".
       let query = product.name;
 
-      // Se per qualche motivo il nome è vuoto, usiamo il barcode come ruota di scorta
       if (!query || query.trim() === '') {
         query = product.barcode;
       }
       
-      // Chiama il nostro controller Node.js
       const competitors = await this.comparisonService.getOnlineCompetitors(query);
       
       product.onlineCompetitors = competitors;
@@ -110,8 +105,11 @@ export class PriceComparisonPage implements OnInit {
     if (confirm('Sei sicuro di voler eliminare questo prodotto dalle tue rilevazioni?')) {
       try {
         await this.comparisonService.deleteLocalProduct(productId);
-        // Rimuove istantaneamente la riga dalla UI senza ricaricare la pagina
+        
+        // Rimuoviamo istantaneamente sia dalla lista principale che da quella filtrata
         this.localProducts = this.localProducts.filter(p => p._id !== productId);
+        this.filteredProducts = this.filteredProducts.filter(p => p._id !== productId);
+        
         this.showToast('Prodotto eliminato con successo', 'success');
       } catch (error) {
         console.error(error);
@@ -120,14 +118,79 @@ export class PriceComparisonPage implements OnInit {
     }
   }
 
-  // Utility per i messaggi a schermo
-  async showToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2500,
-      color,
-      position: 'bottom'
+  // ==========================================
+  // 4. ORDINAMENTO E RICERCA (Dalla Dashboard)
+  // ==========================================
+  async presentSortOptions() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Ordina prodotti per prezzo',
+      buttons: [
+        {
+          text: 'Ultimo prodotto aggiunto',
+          icon: 'time-outline',
+          handler: () => { this.sortProducts('default'); }
+        },
+        {
+          text: 'Prezzo crescente',
+          icon: 'arrow-up-outline',
+          handler: () => { this.sortProducts('asc'); }
+        },
+        {
+          text: 'Prezzo decrescente',
+          icon: 'arrow-down-outline',
+          handler: () => { this.sortProducts('desc'); }
+        },
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        }
+      ]
     });
+    await actionSheet.present();
+  }
+
+  sortProducts(order: 'asc' | 'desc' | 'default') {
+    if (order === 'default') {
+      // Ripristiniamo l'ordine originale e filtriamo di nuovo in caso ci sia testo nella barra
+      this.filteredProducts = [...this.localProducts];
+      if (this.searchQuery) this.filterProducts();
+      
+      this.showToast('Prodotti ordinati per data di aggiunta', 'primary');
+      return; 
+    }
+
+    this.filteredProducts.sort((a, b) => {
+      const priceA = a.currentPrice || 0;
+      const priceB = b.currentPrice || 0;
+      
+      if (order === 'asc') return priceA - priceB;
+      else return priceB - priceA;
+    });
+
+    this.showToast(`Prodotti ordinati per prezzo ${order === 'asc' ? 'crescente' : 'decrescente'}`, 'primary');
+  }
+
+  filterProducts() {
+    const query = this.searchQuery.toLowerCase().trim();
+    
+    if (!query) {
+      this.filteredProducts = [...this.localProducts];
+      return;
+    }
+
+    this.filteredProducts = this.localProducts.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      (p.barcode && p.barcode.includes(query))
+    );
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.filteredProducts = [...this.localProducts];
+  }
+
+  async showToast(message: string, color: string) {
+    const toast = await this.toastCtrl.create({ message, duration: 2500, color, position: 'bottom' });
     toast.present();
   }
 }

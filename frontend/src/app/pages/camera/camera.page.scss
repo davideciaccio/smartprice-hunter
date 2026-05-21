@@ -184,7 +184,8 @@ body {
       border-radius: 8px;
       font-size: 1rem;
       background-color: #FFFFFF !important;
-      color: var(--app-text-midnight, #0A1128);
+      color: var(--app-text-midnight, #0A1128) !important;
+      caret-color: var(--app-text-midnight, #0A1128);
       outline: none;
 
       &:focus {
@@ -247,6 +248,8 @@ body {
     padding: 1rem;
     border: 1px solid var(--app-text-midnight, #0A1128);
     background-color: #FFFFFF !important;
+    color: var(--app-text-midnight, #0A1128) !important;
+    caret-color: var(--app-text-midnight, #0A1128);
     border-radius: 8px;
     font-size: 1rem;
     margin-bottom: 1.5rem;

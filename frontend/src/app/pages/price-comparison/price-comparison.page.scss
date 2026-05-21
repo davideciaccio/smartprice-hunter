@@ -91,7 +91,7 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
-/* === TABLE SECTION (Dalla Dashboard) === */
+/* === TABLE SECTION === */
 .data-section {
   background-color: $white;
   border-radius: 12px;
@@ -99,10 +99,88 @@ body {
   border: 1px solid $text-midnight;
   overflow: hidden;
 
+  /* STILI AGGIORNATI CON CONTROLLI DASHBOARD */
   .table-header {
     padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid $border-light;
+    
     h2 { font-size: 1.1rem; color: $text-midnight; }
+
+    .table-controls {
+      display: flex;
+      gap: 0.5rem;
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid $text-midnight;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: $text-midnight;
+        cursor: pointer;
+        font-size: 0.85rem;
+
+        &:hover { background-color: rgba(10, 17, 40, 0.05); }
+      }
+
+      .sort-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+
+        .sort-icon {
+          width: 18px;
+          height: 18px;
+          fill: currentColor;
+          flex-shrink: 0;
+        }
+      }
+
+      .search-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 250px; 
+
+        .search-icon {
+          position: absolute; left: 0.6rem; width: 18px; height: 18px; fill: rgba(10, 17, 40, 0.4);
+          cursor: pointer; z-index: 2; transition: fill 0.2s;
+          &:hover { fill: var(--app-accent-eggplant); }
+        }
+
+        .search-input {
+          padding: 0.5rem 2.5rem 0.5rem 2.2rem;
+          border: 1px solid var(--app-text-midnight);
+          border-radius: 6px;
+          width: 100%;
+          color: #0A1128 !important;
+          background: #FFFFFF !important;
+          color-scheme: light !important;
+          appearance: none; -webkit-appearance: none;
+
+          &::-webkit-search-decoration,
+          &::-webkit-search-cancel-button,
+          &::-webkit-search-results-button,
+          &::-webkit-search-results-decoration { display: none; }
+
+          &:focus {
+            outline: none;
+            border-color: $text-midnight; 
+            box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
+          }
+        }
+
+        .clear-icon {
+          position: absolute; right: 0.6rem; background: none; border: none; cursor: pointer; padding: 0;
+          display: flex; align-items: center; justify-content: center;
+          svg { width: 18px; height: 18px; fill: rgba(10, 17, 40, 0.3); transition: fill 0.2s; }
+          &:hover svg { fill: var(--app-danger); }
+        }
+      }
+    }
   }
 
   .table-responsive {
@@ -150,7 +228,6 @@ body {
       &.no-competitors { padding: 1rem !important; font-style: italic; }
     }
 
-    /* --- STILI SPECIFICI PER LE OFFERTE ONLINE (Dentro la Tabella) --- */
     .btn-search-online {
       display: inline-flex; align-items: center; gap: 8px;
       background-color: $text-midnight; color: $white; border: 1px solid $text-midnight;
@@ -193,10 +270,7 @@ body {
         }
       }
     }
-  }
-}
 
-/* --- STILE BOTTONE ELIMINA (Preso dalla Dashboard) --- */
     .action-cell {
       text-align: center;
       width: 60px;
@@ -204,7 +278,7 @@ body {
 
     .btn-delete {
       background-color: rgba(211, 47, 47, 0.1);
-      color: #d9534f; /* Rosso per l'icona */
+      color: #d9534f;
       border: 1px solid rgba(211, 47, 47, 0.3);
       padding: 0.5rem;
       border-radius: 8px;
@@ -214,18 +288,22 @@ body {
       justify-content: center;
       transition: all 0.2s ease;
 
-      svg {
-        width: 18px;
-        height: 18px;
-        fill: currentColor;
-      }
+      svg { width: 18px; height: 18px; fill: currentColor; }
 
       &:hover {
-        background-color: #d9534f;
-        color: white;
-        transform: scale(1.05);
+        background-color: #d9534f; color: white; transform: scale(1.05);
       }
     }
+  }
+}
+
+.btn-close-results {
+  background: rgba(10, 17, 40, 0.05); border: none; cursor: pointer;
+  padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  margin-left: auto; margin-bottom: 8px; transition: background 0.2s;
+  svg { width: 14px; height: 14px; fill: rgba(10, 17, 40, 0.6); }
+  &:hover { background: rgba(10, 17, 40, 0.15); }
+}
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
@@ -242,4 +320,22 @@ body {
   }
 
   .main-content { padding: 1rem; }
+
+  .data-section .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .table-controls {
+      width: 100%;
+      flex-wrap: wrap; 
+      
+      .search-wrapper {
+        flex: 1; 
+        min-width: 150px;
+        
+        .search-input { width: 100%; }
+      }
+    }
+  }
 }
