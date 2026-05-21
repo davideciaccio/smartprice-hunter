@@ -91,14 +91,112 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
-/* === SEZIONE CONTENUTO === */
-.comparison-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+/* === TABLE SECTION (Dalla Dashboard) === */
+.data-section {
+  background-color: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
+  border: 1px solid $text-midnight;
+  overflow: hidden;
+
+  .table-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid $border-light;
+    h2 { font-size: 1.1rem; color: $text-midnight; }
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    th, td { padding: 1rem 1.5rem; font-size: 0.85rem; vertical-align: middle; }
+
+    th {
+      background-color: rgba(10, 17, 40, 0.04);
+      color: $text-midnight;
+      font-weight: 600;
+      border-bottom: 2px solid $text-midnight;
+      white-space: nowrap;
+    }
+
+    td {
+      border-bottom: 1px solid $border-light;
+      color: $text-midnight;
+    }
+
+    tbody tr:hover { background-color: rgba(10, 17, 40, 0.02); }
+
+    .product-cell {
+      display: flex; align-items: center; gap: 1rem;
+      .product-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background-color: rgba(10, 17, 40, 0.03); border: 1px solid $border-light; }
+      .product-thumb-placeholder { width: 40px; height: 40px; border-radius: 6px; background: rgba(10, 17, 40, 0.05); display: flex; align-items: center; justify-content: center; font-weight: bold; color: $text-midnight; font-size: 0.8rem; }
+      .product-details {
+        display: flex; flex-direction: column;
+        .product-name-link { font-weight: 600; color: $text-midnight; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        small { font-size: 0.75rem; color: rgba(10, 17, 40, 0.6); }
+      }
+    }
+
+    .price-highlight { font-weight: 700; color: $accent-eggplant; }
+
+    .empty-state {
+      text-align: center; padding: 3rem !important; color: rgba(10, 17, 40, 0.5) !important; line-height: 1.5;
+      strong { color: var(--app-text-midnight); }
+      &.no-competitors { padding: 1rem !important; font-style: italic; }
+    }
+
+    /* --- STILI SPECIFICI PER LE OFFERTE ONLINE (Dentro la Tabella) --- */
+    .btn-search-online {
+      display: inline-flex; align-items: center; gap: 8px;
+      background-color: $text-midnight; color: $white; border: 1px solid $text-midnight;
+      padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+      svg { width: 16px; height: 16px; fill: white; }
+      &:hover { filter: brightness(0.9); box-shadow: 0 4px 8px rgba(10,17,40,0.1); }
+    }
+
+    .online-loading { display: flex; align-items: center; gap: 8px; color: $text-midnight; font-size: 0.85rem; font-weight: 500;}
+
+    .competitor-card {
+      border: 1px solid $border-light; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+      background: rgba(10, 17, 40, 0.02); min-width: 250px;
+      
+      &:last-child { margin-bottom: 0; }
+
+      .comp-header {
+        display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+        .store-icon { width: 20px; height: 20px; object-fit: contain; }
+        .store-name { font-weight: 600; font-size: 0.85rem; flex: 1; }
+        .condition-badge {
+          font-size: 0.65rem; padding: 3px 6px; border-radius: 6px; font-weight: 700;
+          &.new { background: #d4edda; color: #155724; }
+          &.refurbished { background: #fff3cd; color: #856404; }
+        }
+      }
+
+      .comp-body {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        .price-area {
+          display: flex; flex-direction: column;
+          .comp-price { font-weight: 700; color: $accent-eggplant; font-size: 1.1rem; }
+          .comp-delivery { font-size: 0.75rem; color: #28a745; margin-top: 2px; }
+        }
+        .btn-outline-small {
+          font-size: 0.8rem; background: transparent; color: $text-midnight; border: 1px solid $text-midnight;
+          padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.2s;
+          &:hover { background: $text-midnight; color: $white; }
+        }
+      }
+    }
+  }
 }
 
-/* === RESPONSIVE (TABLET E MOBILE) === */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .topbar {
     .title-area { display: flex; align-items: center; gap: 0.5rem; }

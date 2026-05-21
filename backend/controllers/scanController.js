@@ -58,7 +58,7 @@ exports.saveScannedProduct = async (req, res) => {
 // --- FUNZIONE 2: Recupera i prodotti scansionati (QUELLA CHE MANCAVA!) ---
 exports.getScannedProducts = async (req, res) => {
     try {
-        const products = await ScannedProduct.find({ user: req.user.userId }).sort({ createdAt: -1 });
+        const products = await ScannedProduct.find().sort({ createdAt: -1 });
         res.status(200).json(products);
     } catch (error) {
         console.error("Errore nel recupero scansioni:", error);

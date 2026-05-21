@@ -5,7 +5,7 @@ const Product = require('../models/Product');
 const { runScrapingEngine } = require('../controllers/scraperController');
 
 const startPriceMonitor = () => {
-    // Sintassi Cron: '*/2 * * * *' = Esegui ogni 2 minuti
+    // Sintassi Cron: '*/5 * * * *' = Esegui ogni 5 minuti
     // Sintassi Cron: '* 3 * * *' = Esegui ogni 3 ore
     cron.schedule('*/5 * * * *', async () => {
         console.log('[CRON JOB] Avvio controllo prezzi in background...');
@@ -14,11 +14,11 @@ const startPriceMonitor = () => {
             const products = await Product.find();
             
             if (products.length === 0) {
-                console.log('Nessun prodotto da monitorare.');
+                console.log('Nessun prodotto da monitorare');
                 return;
             }
 
-            // Cicliamo su ogni prodotto usando for...of (una pagina alla volta)
+            // Ciclo su ogni prodotto, costo computazionale da calcolare 
             for (let product of products) {
                 console.log('##################################################');
                 console.log(`Analisi di: ${product.name}...`);

@@ -21,21 +21,112 @@
   <div class="sidebar-overlay" [class.active]="isSidebarActive" (click)="closeSidebar()"></div>
 
   <main class="main-content">
-    
     <header class="topbar">
       <div class="title-area">
         <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
           <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </button>
         <div class="title-text">
-          <h1>Confronto Prezzi</h1>
-          <p>Seleziona un prodotto per confrontare le tariffe nei vari punti vendita.</p>
+          <h1>Confronto prezzi</h1>
+          <p>Qui puoi confrontare il prezzo dei tuoi prodotti scansionati con i prezzi online</p>
         </div>
       </div>
     </header>
 
-    <section class="comparison-section">
-      </section>
+    <section class="data-section">
+      <div class="table-header">
+        <h2>Prodotti rilevati in negozio</h2>
+      </div>
 
+      <div class="table-responsive">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Prodotto Rilevato</th>
+              <th>Prezzo in Negozio (Fisico)</th>
+              <th>Migliori Offerte Online</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            <tr *ngIf="isLoadingLocal">
+              <td colspan="3" class="empty-state">
+                <ion-spinner name="crescent"></ion-spinner><br>
+                <small>Caricamento prodotti dal database...</small>
+              </td>
+            </tr>
+
+            <tr *ngIf="!isLoadingLocal && localProducts.length === 0">
+              <td colspan="3" class="empty-state">
+                <strong>Nessun prodotto trovato!</strong><br>
+                <small>Vai nella sezione Fotocamera e scansiona qualche prodotto in un negozio fisico per poterlo confrontare.</small>
+              </td>
+            </tr>
+
+            <tr *ngFor="let product of localProducts">
+              
+              <td>
+                <div class="product-cell">
+                  <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb" onerror="this.src='assets/placeholder.png'">
+                  <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
+                  
+                  <div class="product-details">
+                    <span class="product-name-link">{{ product.name }}</span>
+                    <small *ngIf="product.brand" style="margin-top: 2px;">{{ product.brand }}</small>
+                    <small>EAN: {{ product.barcode }}</small>
+                  </div>
+                </div>
+              </td>
+              
+              <td>
+                <div class="price-highlight" style="margin-bottom: 4px; font-size: 1.1rem;">
+                  €{{ product.currentPrice ? product.currentPrice.toFixed(2) : 'N/D' }}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--app-text-midnight);">
+                  <strong>{{ product.store?.name || 'Negozio Fisico' }}</strong>
+                </div>
+              </td>
+              
+              <td>
+                <button class="btn-search-online" *ngIf="!product.hasSearchedOnline && !product.isSearchingOnline" (click)="searchOnline(product)">
+                  <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                  Cerca Prezzi Online
+                </button>
+
+                <div class="online-loading" *ngIf="product.isSearchingOnline">
+                  <ion-spinner name="dots"></ion-spinner> <span>Ricerca in corso...</span>
+                </div>
+
+                <div class="online-results" *ngIf="product.hasSearchedOnline">
+                  
+                  <div class="empty-state no-competitors" *ngIf="product.onlineCompetitors.length === 0">
+                    <small>Nessuna offerta trovata.</small>
+                  </div>
+
+                  <div class="competitor-card" *ngFor="let comp of product.onlineCompetitors">
+                    <div class="comp-header">
+                      <img [src]="comp.storeIcon" class="store-icon" alt="Logo">
+                      <span class="store-name">{{ comp.storeName }}</span>
+                      <span class="badge condition-badge" [class.new]="comp.condition === 'new'" [class.refurbished]="comp.condition !== 'new'">
+                        {{ comp.condition === 'new' ? 'Nuovo' : 'Ricondizionato' }}
+                      </span>
+                    </div>
+                    <div class="comp-body">
+                      <div class="price-area">
+                        <span class="comp-price">{{ comp.formattedPrice }}</span>
+                        <span class="comp-delivery" *ngIf="comp.delivery">{{ comp.delivery }}</span>
+                      </div>
+                      <a [href]="comp.link" target="_blank" class="btn-outline-small">Vedi Offerta</a>
+                    </div>
+                  </div>
+
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
 </div>
