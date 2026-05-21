@@ -51,7 +51,7 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-  // Recupera il token per le chiamate future (ci servirà nella Fase 4!)
+  // Recupera il token per le chiamate future
   getToken() {
     return localStorage.getItem('token');
   }

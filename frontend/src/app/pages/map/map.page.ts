@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // IMPORTANTE: Aggiunto HttpClient
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // IMPORTANTE: Aggiunto HttpClient
 import { lastValueFrom } from 'rxjs';
 import * as L from 'leaflet';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-map',
@@ -28,7 +29,7 @@ export class MapPage implements OnInit, AfterViewInit {
   private map: any;
   private userMarker: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit() {}
 
@@ -38,6 +39,15 @@ export class MapPage implements OnInit, AfterViewInit {
 
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }
   closeSidebar() { this.isSidebarActive = false; }
+
+  // 3. USA IL TOKEN DALL'AUTH SERVICE
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  }
 
   // ==========================================
   // INIZIALIZZAZIONE MAPPA
@@ -225,7 +235,7 @@ export class MapPage implements OnInit, AfterViewInit {
     try {
       // Chiama il tuo backend Node.js
       const url = `http://localhost:3000/api/scanned/search?q=${encodeURIComponent(query)}`;
-      const response: any = await lastValueFrom(this.http.get(url));
+      const response: any = await lastValueFrom(this.http.get(url, { headers: this.getHeaders() }));
 
       // Teniamo solo la prima occorrenza per ogni codice a barre
       const uniqueProducts = response.filter((value: any, index: number, self: any[]) =>
@@ -270,7 +280,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
       try {
         const url = `http://localhost:3000/api/scanned/locations/${product.barcode}`;
-        const locations: any = await lastValueFrom(this.http.get(url));
+        const locations: any = await lastValueFrom(this.http.get(url, { headers: this.getHeaders() }));
 
         if (locations && locations.length > 0) {
           

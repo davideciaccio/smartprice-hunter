@@ -6,6 +6,8 @@ exports.saveScannedProduct = async (req, res) => {
     // Estraiamo i dati che arrivano dal frontend (camera.page.ts)
     const { barcode, name, brand, image, price, store } = req.body;
 
+    const userId = req.user.userId;
+
     // 1. RIFORMATTIAMO LO STORE PER FARLO COMBACIARE COL TUO SCHEMA DB
     const storeForDb = {
       name: store.name,
@@ -34,7 +36,8 @@ exports.saveScannedProduct = async (req, res) => {
           brand: brand,
           image: image,
           currentPrice: price, // Aggiorna il prezzo specifico per questo binomio prodotto-negozio
-          store: storeForDb, // Salva l'oggetto store completo (lat, lng, address, name)
+          store: storeForDb,
+          user: userId, // Salva l'oggetto store completo (lat, lng, address, name)
           updatedAt: new Date() // Buona pratica per tracciare l'ultimo aggiornamento prezzo
         }
       },
@@ -58,7 +61,10 @@ exports.saveScannedProduct = async (req, res) => {
 // --- FUNZIONE 2: Recupera i prodotti scansionati (QUELLA CHE MANCAVA!) ---
 exports.getScannedProducts = async (req, res) => {
     try {
-        const products = await ScannedProduct.find().sort({ createdAt: -1 });
+        // Prendiamo l'ID dell'utente loggato
+        const userId = req.user.userId;
+        // Filtriamo il database usando l'ID
+        const products = await ScannedProduct.find({ user: userId }).sort({ createdAt: -1 });
         res.status(200).json(products);
     } catch (error) {
         console.error("Errore nel recupero scansioni:", error);
@@ -98,6 +104,7 @@ exports.lookupBarcode = async (req, res) => {
 exports.searchProducts = async (req, res) => {
   try {
     const searchQuery = req.query.q;
+    const userId = req.user.userId;
     
     if (!searchQuery || searchQuery.length < 2) {
       return res.status(200).json([]);
@@ -108,6 +115,7 @@ exports.searchProducts = async (req, res) => {
 
     // Cerchiamo nel DB: il NOME deve contenere il testo OPPURE il BARCODE deve contenerlo
     const products = await ScannedProduct.find({
+      user: userId,
       $or: [
         { name: regex },
         { barcode: regex }
@@ -134,23 +142,30 @@ exports.getProductLocations = async (req, res) => {
   }
 };
 
-// Funzione per eliminare un prodotto scansionato
 exports.deleteScannedProduct = async (req, res) => {
   try {
-    const productId = req.params.id; // Prende l'ID dall'URL
+    const productId = req.params.id; 
+    const userId = req.user.userId; // ID preso dal token dopo il middleware
+
+    // Usiamo findOneAndDelete passando l'ID E l'utente proprietario
+    const deletedProduct = await ScannedProduct.findOneAndDelete({ 
+      _id: productId, 
+      user: userId // <--- Questo è il filtro di sicurezza!
+    });
     
-    // Trova e cancella il prodotto dal Database
-    const deletedProduct = await ScannedProduct.findByIdAndDelete(productId);
-    
+    // Se non trova il prodotto con quella combinazione, significa che:
+    // 1. Non esiste
+    // 2. Oppure NON appartiene all'utente (quindi è un tentativo di eliminazione non autorizzato)
     if (!deletedProduct) {
-      return res.status(404).json({ message: 'Prodotto non trovato nel database.' });
+      return res.status(404).json({ 
+        message: 'Prodotto non trovato o non autorizzato alla cancellazione.' 
+      });
     }
 
-    // Risponde con un JSON valido (fondamentale per non far crashare Angular)
     res.status(200).json({ message: 'Prodotto eliminato con successo.' });
     
   } catch (error) {
     console.error("Errore nell'eliminazione del prodotto scansionato:", error);
-    res.status(500).json({ error: 'Errore interno del server durante l\'eliminazione.' });
+    res.status(500).json({ error: 'Errore interno del server.' });
   }
 };
