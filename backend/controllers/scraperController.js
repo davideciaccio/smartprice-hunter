@@ -11,7 +11,7 @@ const runScrapingEngine = async (url) => {
         
         // 1. Setup Puppeteer (esattamente come nel tuo file originale)
         browser = await puppeteer.launch({ 
-            headless: "new",
+            headless: 'new',
             args: [
                 '--no-sandbox', 
                 '--disable-setuid-sandbox',
@@ -85,14 +85,17 @@ const runScrapingEngine = async (url) => {
                 }
             }
 
+            // C. Prezzo
             if (!extractedPrice) {
                 let priceText = null;
                 const priceSelectors = [
-                    '[data-testid="trade-box-buy-amount"]',
-                    '.a-price .a-offscreen', 
-                    '.x-price-primary', 
-                    '[data-testid="product-price"]', 
-                    'meta[property="product:price:amount"]', 
+                    '#corePriceDisplay_desktop_feature_div .a-offscreen', // Amazon (Prezzo principale Nuovi Layout)
+                    '.a-price .a-offscreen', // Amazon (Prezzo generico nascosto)
+                    '.a-price-whole', // Amazon (Solo numeri interi per abbigliamento)
+                    '[data-testid="trade-box-buy-amount"]', // StockX
+                    '.x-price-primary', // eBay
+                    '[data-testid="product-price"]', // Generico
+                    'meta[property="product:price:amount"]', // Meta tag
                     '[itemprop="price"]',
                     '.price'
                 ];
@@ -100,12 +103,19 @@ const runScrapingEngine = async (url) => {
                 for (let selector of priceSelectors) {
                     const el = document.querySelector(selector);
                     if (el) {
-                        priceText = el.content || el.innerText;
-                        break;
+                        // IL TRUCCO DA SENIOR: usiamo textContent per leggere anche il testo nascosto/coperto!
+                        priceText = el.content || el.textContent || el.innerText;
+                        
+                        // Puliamo eventuali spazi vuoti. Se troviamo davvero un testo, fermiamo il ciclo.
+                        if (priceText && priceText.trim() !== '') {
+                            break;
+                        }
                     }
                 }
 
+                // Pulizia del testo prezzo
                 if (priceText) {
+                    // Sostituisce la virgola con il punto per i decimali, rimuove il resto
                     const cleanPrice = priceText.replace(/[^0-9,-]/g, '').replace(',', '.');
                     extractedPrice = parseFloat(cleanPrice);
                 }
