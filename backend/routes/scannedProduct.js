@@ -9,5 +9,6 @@ router.get('/', authMiddleware, scanController.getScannedProducts);
 router.get('/lookup/:barcode', scanController.lookupBarcode);
 router.get('/search', scanController.searchProducts);
 router.get('/locations/:barcode', scanController.getProductLocations);
+router.delete('/:id', authMiddleware, scanController.deleteScannedProduct);
 
 module.exports = router;

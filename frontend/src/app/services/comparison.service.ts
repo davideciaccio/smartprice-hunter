@@ -53,4 +53,15 @@ export class ComparisonService {
       throw error;
     }
   }
+
+  async deleteLocalProduct(productId: string) {
+    const url = `${this.baseUrl}/scanned/${productId}`;
+    try {
+      const response = await lastValueFrom(this.http.delete(url, { headers: this.getHeaders() }));
+      return response;
+    } catch (error) {
+      console.error('Errore durante l\'eliminazione:', error);
+      throw error;
+    }
+  }
 }

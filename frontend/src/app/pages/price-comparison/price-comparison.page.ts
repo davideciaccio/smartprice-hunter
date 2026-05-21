@@ -103,6 +103,23 @@ export class PriceComparisonPage implements OnInit {
     }
   }
 
+  // ==========================================
+  // 3. ELIMINAZIONE PRODOTTO LOCALE
+  // ==========================================
+  async deleteProduct(productId: string) {
+    if (confirm('Sei sicuro di voler eliminare questo prodotto dalle tue rilevazioni?')) {
+      try {
+        await this.comparisonService.deleteLocalProduct(productId);
+        // Rimuove istantaneamente la riga dalla UI senza ricaricare la pagina
+        this.localProducts = this.localProducts.filter(p => p._id !== productId);
+        this.showToast('Prodotto eliminato con successo', 'success');
+      } catch (error) {
+        console.error(error);
+        this.showToast('Errore durante l\'eliminazione', 'danger');
+      }
+    }
+  }
+
   // Utility per i messaggi a schermo
   async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({

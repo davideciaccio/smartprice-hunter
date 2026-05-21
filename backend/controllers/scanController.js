@@ -133,3 +133,24 @@ exports.getProductLocations = async (req, res) => {
     res.status(500).json({ error: 'Errore del server' });
   }
 };
+
+// Funzione per eliminare un prodotto scansionato
+exports.deleteScannedProduct = async (req, res) => {
+  try {
+    const productId = req.params.id; // Prende l'ID dall'URL
+    
+    // Trova e cancella il prodotto dal Database
+    const deletedProduct = await ScannedProduct.findByIdAndDelete(productId);
+    
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Prodotto non trovato nel database.' });
+    }
+
+    // Risponde con un JSON valido (fondamentale per non far crashare Angular)
+    res.status(200).json({ message: 'Prodotto eliminato con successo.' });
+    
+  } catch (error) {
+    console.error("Errore nell'eliminazione del prodotto scansionato:", error);
+    res.status(500).json({ error: 'Errore interno del server durante l\'eliminazione.' });
+  }
+};

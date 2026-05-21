@@ -45,6 +45,7 @@
               <th>Prodotto Rilevato</th>
               <th>Prezzo in Negozio (Fisico)</th>
               <th>Migliori Offerte Online</th>
+              <th>Azioni</th>
             </tr>
           </thead>
           
@@ -67,7 +68,7 @@
               
               <td>
                 <div class="product-cell">
-                  <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb" onerror="this.src='assets/placeholder.png'">
+                  <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb" (error)="product.image = null">
                   <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
                   
                   <div class="product-details">
@@ -121,6 +122,14 @@
                   </div>
 
                 </div>
+              </td>
+
+              <td class="action-cell">
+                <button type="button" class="btn-delete" (click)="deleteProduct(product._id)" title="Elimina Prodotto">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                  </svg>
+                </button>
               </td>
 
             </tr>
