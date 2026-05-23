@@ -1,44 +1,38 @@
 const ScannedProduct = require('../models/ScannedProduct');
 const axios = require('axios');
 
+// --- 1. SALVATAGGIO PRODOTTO ---
 exports.saveScannedProduct = async (req, res) => {
   try {
-    // Estraiamo i dati che arrivano dal frontend (camera.page.ts)
     const { barcode, name, brand, image, price, store } = req.body;
-
     const userId = req.user.userId;
 
-    // 1. RIFORMATTIAMO LO STORE PER FARLO COMBACIARE COL TUO SCHEMA DB
     const storeForDb = {
       name: store.name,
       address: store.address,
       coordinates: {
-        lat: store.lat, // Prende la latitudine dal frontend
-        lng: store.lng  // Prende la longitudine dal frontend
+        lat: store.lat, 
+        lng: store.lng  
       }
     };
 
-    /**
-     * CORREZIONE LOGICA:
-     * Il filtro ora cerca la combinazione UNICA di Barcode + Nome Negozio + Indirizzo Negozio.
-     * * 1. Se scansioni lo stesso prodotto in un NUOVO negozio -> Crea un nuovo record (grazie a upsert: true).
-     * 2. Se scansioni lo stesso prodotto nello STESSO negozio -> Aggiorna il prezzo di quel record specifico.
-     */
+ 
     const updatedProduct = await ScannedProduct.findOneAndUpdate(
       { 
         barcode: barcode, 
         "store.name": store.name, 
-        "store.address": store.address 
+        "store.address": store.address,
+        user: userId // <--- LA CHIAVE DEL FIX
       }, 
       { 
         $set: { 
-          name: name,   // Mantiene i dati descrittivi aggiornati
+          name: name,   
           brand: brand,
           image: image,
-          currentPrice: price, // Aggiorna il prezzo specifico per questo binomio prodotto-negozio
+          currentPrice: price, 
           store: storeForDb,
-          user: userId, // Salva l'oggetto store completo (lat, lng, address, name)
-          updatedAt: new Date() // Buona pratica per tracciare l'ultimo aggiornamento prezzo
+          user: userId, 
+          updatedAt: new Date() // Aggiorniamo la data per la mappa
         }
       },
       { 
@@ -58,12 +52,10 @@ exports.saveScannedProduct = async (req, res) => {
   }
 };
 
-// --- FUNZIONE 2: Recupera i prodotti scansionati (QUELLA CHE MANCAVA!) ---
+// --- 2. RECUPERA I PRODOTTI DELL'UTENTE (DASHBOARD e COMPARISON) ---
 exports.getScannedProducts = async (req, res) => {
     try {
-        // Prendiamo l'ID dell'utente loggato
         const userId = req.user.userId;
-        // Filtriamo il database usando l'ID
         const products = await ScannedProduct.find({ user: userId }).sort({ createdAt: -1 });
         res.status(200).json(products);
     } catch (error) {
@@ -72,55 +64,24 @@ exports.getScannedProducts = async (req, res) => {
     }
 };
 
-exports.lookupBarcode = async (req, res) => {
-  try {
-    const barcode = req.params.barcode;
-
-    // 1. Cerchiamo PRIMA nel nostro database
-    const existingProduct = await ScannedProduct.findOne({ barcode: barcode });
-
-    if (existingProduct) {
-      // Trovato! Rispondiamo al frontend dicendo che viene dal DB
-      return res.status(200).json({ 
-        foundInDb: true, 
-        data: existingProduct 
-      });
-    }
-    
-    // Il backend chiama l'API esterna (nessun blocco CORS qui!)
-    const apiUrl = `https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`;
-    const response = await axios.get(apiUrl);
-    
-    // Restituiamo il JSON pulito al nostro frontend Angular
-    res.status(200).json(response.data);
-    
-  } catch (error) {
-    console.error('Errore backend durante chiamata UPCitemdb:', error.message);
-    res.status(500).json({ error: 'Errore di connessione al database prodotti' });
-  }
-};
-
-// Aggiungi questo in backend/controllers/scanController.js
+// --- 3. RICERCA GLOBALE PER LA TENDINA DELLA MAPPA ---
 exports.searchProducts = async (req, res) => {
   try {
     const searchQuery = req.query.q;
-    const userId = req.user.userId;
     
     if (!searchQuery || searchQuery.length < 2) {
       return res.status(200).json([]);
     }
 
-    // Creiamo una RegExp per una ricerca "case-insensitive" (ignora maiuscole/minuscole)
     const regex = new RegExp(searchQuery, 'i');
-
-    // Cerchiamo nel DB: il NOME deve contenere il testo OPPURE il BARCODE deve contenerlo
+    
+    // Globale: senza filtro user
     const products = await ScannedProduct.find({
-      user: userId,
       $or: [
         { name: regex },
         { barcode: regex }
       ]
-    }).limit(10); // Limitiamo a 10 risultati per non appesantire la tendina
+    }).limit(10); 
 
     res.status(200).json(products);
   } catch (error) {
@@ -129,33 +90,53 @@ exports.searchProducts = async (req, res) => {
   }
 };
 
-// backend/controllers/scanController.js
+// --- 4. MAPPA: RECUPERA LE POSIZIONI PIÙ RECENTI ---
 exports.getProductLocations = async (req, res) => {
   try {
     const barcode = req.params.barcode;
-    // Troviamo tutte le occorrenze di quel prodotto nei vari negozi
-    const locations = await ScannedProduct.find({ barcode: barcode });
-    res.status(200).json(locations);
+    
+    // 1. Peschiamo tutti i record GLOBALI di quel barcode, ordinati dal più recente al più vecchio
+    const allLocations = await ScannedProduct.find({ barcode: barcode })
+                                             .sort({ updatedAt: -1, createdAt: -1 });
+    
+    // 2. Filtriamo i duplicati (stesso negozio scansionato da più utenti)
+    // Teniamo solo il primo che incontriamo (che grazie al .sort() è il più recente!)
+    const uniqueLocations = [];
+    const seenStores = new Set();
+
+    for (const loc of allLocations) {
+      // Creiamo una "chiave" unica basata su nome e indirizzo del negozio
+      const storeKey = `${loc.store.name}-${loc.store.address}`;
+      
+      // Se non abbiamo ancora visto questo negozio, lo aggiungiamo all'array da inviare alla mappa
+      if (!seenStores.has(storeKey)) {
+        seenStores.add(storeKey);
+        uniqueLocations.push(loc);
+      }
+    }
+
+    // Inviamo alla mappa solo la lista "pulita" senza pin sovrapposti
+    res.status(200).json(uniqueLocations);
+
   } catch (error) {
     console.error('Errore recupero posizioni:', error);
     res.status(500).json({ error: 'Errore del server' });
   }
 };
 
+// --- 5. ELIMINAZIONE PRODOTTO (TASK 2) ---
 exports.deleteScannedProduct = async (req, res) => {
   try {
     const productId = req.params.id; 
-    const userId = req.user.userId; // ID preso dal token dopo il middleware
+    const userId = req.user.userId; 
 
-    // Usiamo findOneAndDelete passando l'ID E l'utente proprietario
+    // FIX TASK 2: Eliminazione sicura. Rimuove SOLO la riga di QUESTO utente.
+    // L'eventuale riga dell'altro utente nello stesso negozio resta salva nel DB.
     const deletedProduct = await ScannedProduct.findOneAndDelete({ 
       _id: productId, 
-      user: userId // <--- Questo è il filtro di sicurezza!
+      user: userId 
     });
     
-    // Se non trova il prodotto con quella combinazione, significa che:
-    // 1. Non esiste
-    // 2. Oppure NON appartiene all'utente (quindi è un tentativo di eliminazione non autorizzato)
     if (!deletedProduct) {
       return res.status(404).json({ 
         message: 'Prodotto non trovato o non autorizzato alla cancellazione.' 
@@ -167,5 +148,30 @@ exports.deleteScannedProduct = async (req, res) => {
   } catch (error) {
     console.error("Errore nell'eliminazione del prodotto scansionato:", error);
     res.status(500).json({ error: 'Errore interno del server.' });
+  }
+};
+
+// --- 6. CHIAMATA AL DATABASE ESTERNO (GLOBALE) ---
+exports.lookupBarcode = async (req, res) => {
+  try {
+    const barcode = req.params.barcode;
+    
+    // Cerca globalmente nel DB per risparmiare chiamate API
+    const existingProduct = await ScannedProduct.findOne({ barcode: barcode });
+
+    if (existingProduct) {
+      return res.status(200).json({ 
+        foundInDb: true, 
+        data: existingProduct 
+      });
+    }
+    
+    const apiUrl = `https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`;
+    const response = await axios.get(apiUrl);
+    res.status(200).json(response.data);
+    
+  } catch (error) {
+    console.error('Errore backend durante chiamata UPCitemdb:', error.message);
+    res.status(500).json({ error: 'Errore di connessione al database prodotti' });
   }
 };

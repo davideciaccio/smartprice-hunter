@@ -11,4 +11,8 @@ router.get('/search',authMiddleware, scanController.searchProducts);
 router.get('/locations/:barcode', scanController.getProductLocations);
 router.delete('/:id', authMiddleware, scanController.deleteScannedProduct);
 
+// Rotte pubbliche o di consultazione generale della mappa
+router.get('/lookup/:barcode', scanController.lookupBarcode);
+router.get('/locations/:barcode', scanController.getProductLocations);
+
 module.exports = router;

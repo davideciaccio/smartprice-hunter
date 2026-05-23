@@ -6,7 +6,6 @@ const scannedProductSchema = new mongoose.Schema({
     image: { type: String },
     brand: { type: String },
     currentPrice: { type: Number, required: true },
-    // --- NUOVA SEZIONE: Punto Vendita ---
     store: {
         name: { type: String, default: 'Negozio Fisico' },
         address: { type: String },
@@ -21,9 +20,9 @@ const scannedProductSchema = new mongoose.Schema({
             date: { type: Date, default: Date.now }
         }
     ],
-    // Riferimento all'utente (come visto in authController.js)
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now } // Aggiunto per sapere qual è la scansione più recente!
 }, { collection: 'scanned_products' });
 
 module.exports = mongoose.model('ScannedProduct', scannedProductSchema);
