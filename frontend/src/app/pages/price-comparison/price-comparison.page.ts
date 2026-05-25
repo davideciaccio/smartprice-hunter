@@ -26,7 +26,7 @@ export class PriceComparisonPage implements OnInit {
   constructor(
     private comparisonService: ComparisonService,
     private toastCtrl: ToastController,
-    private actionSheetController: ActionSheetController, // <-- Aggiunto controller per il sort
+    private actionSheetController: ActionSheetController, 
     private noticeService: NoticeService
   ) {}
 
@@ -40,28 +40,62 @@ export class PriceComparisonPage implements OnInit {
   closeSidebar() { this.isSidebarActive = false; }
 
   // ==========================================
-  // 1. CARICAMENTO PRODOTTI DAL TUO DATABASE
+  // 1. CARICAMENTO E RAGGRUPPAMENTO PRODOTTI
   // ==========================================
   async loadLocalProducts() {
     this.isLoadingLocal = true;
     try {
       const data = await this.comparisonService.getLocalProducts();
       
-      const uniqueProducts = data.filter((value: any, index: number, self: any[]) =>
-        index === self.findIndex((t) => (
-          (t.barcode && t.barcode === value.barcode) || 
-          (!t.barcode && t.name === value.name)
-        ))
-      );
+      // Creiamo una mappa per raggruppare i prodotti con lo stesso EAN/Nome
+      const groupedMap = new Map<string, any>();
 
-      this.localProducts = uniqueProducts;
-      this.filteredProducts = [...this.localProducts];
-      
-      this.localProducts.forEach(p => {
-        p.onlineCompetitors = [];       
-        p.isSearchingOnline = false;    
-        p.hasSearchedOnline = false;    
+      data.forEach((item: any) => {
+        const key = item.barcode || item.name;
+        
+        if (!groupedMap.has(key)) {
+          // Primo incontro con questo prodotto: lo prepariamo
+          groupedMap.set(key, {
+            ...item,
+            locations: [{ 
+              _id: item._id, 
+              store: item.store, 
+              price: item.currentPrice,
+              date: item.updatedAt || item.createdAt
+            }],
+            isDropdownOpen: false
+          });
+        } else {
+          // Trovato duplicato (stesso utente, store diverso): aggiungiamo la location
+          const existing = groupedMap.get(key);
+          existing.locations.push({
+            _id: item._id,
+            store: item.store,
+            price: item.currentPrice,
+            date: item.updatedAt || item.createdAt
+          });
+        }
       });
+
+      // Trasformiamo la mappa in array e stabiliamo l'ordinamento delle tendine
+      this.localProducts = Array.from(groupedMap.values()).map(product => {
+        // Ordiniamo i negozi dal più recente al più vecchio
+        product.locations.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        // Impostiamo come "attivo" il negozio scansionato per ultimo
+        const latest = product.locations[0];
+        product._id = latest._id;
+        product.store = latest.store;
+        product.currentPrice = latest.price;
+        
+        product.onlineCompetitors = [];
+        product.isSearchingOnline = false;
+        product.hasSearchedOnline = false;
+        
+        return product;
+      });
+
+      this.filteredProducts = [...this.localProducts];
 
     } catch (error) {
       console.error('Errore nel caricamento dei prodotti locali:', error);
@@ -72,7 +106,23 @@ export class PriceComparisonPage implements OnInit {
   }
 
   // ==========================================
-  // 2. RICERCA ONLINE "ON-DEMAND" (SERPAPI)
+  // GESTIONE TENDINA NEGOZI (NUOVO)
+  // ==========================================
+  toggleDropdown(product: any) {
+    // Chiude le altre tendine e inverte lo stato di questa
+    this.filteredProducts.forEach(p => { if (p !== product) p.isDropdownOpen = false; });
+    product.isDropdownOpen = !product.isDropdownOpen;
+  }
+
+  selectLocation(product: any, loc: any) {
+    product._id = loc._id;
+    product.store = loc.store;
+    product.currentPrice = loc.price;
+    product.isDropdownOpen = false; // Chiudiamo la tendina
+  }
+
+  // ==========================================
+  // 2. RICERCA ONLINE "ON-DEMAND"
   // ==========================================
   async searchOnline(product: any) {
     if (product.hasSearchedOnline) return;
@@ -81,10 +131,7 @@ export class PriceComparisonPage implements OnInit {
     
     try {
       let query = product.name;
-
-      if (!query || query.trim() === '') {
-        query = product.barcode;
-      }
+      if (!query || query.trim() === '') query = product.barcode;
       
       const competitors = await this.comparisonService.getOnlineCompetitors(query);
       
@@ -105,18 +152,29 @@ export class PriceComparisonPage implements OnInit {
   }
 
   // ==========================================
-  // 3. ELIMINAZIONE PRODOTTO LOCALE
+  // 3. ELIMINAZIONE PRODOTTO SCANSIONATO
   // ==========================================
-  async deleteProduct(productId: string) {
-    if (confirm('Sei sicuro di voler eliminare questo prodotto dalle tue rilevazioni?')) {
+  async deleteProduct(product: any) {
+    if (confirm(`Sei sicuro di voler eliminare la rilevazione da ${product.store.name}?`)) {
       try {
-        await this.comparisonService.deleteLocalProduct(productId);
+        await this.comparisonService.deleteLocalProduct(product._id);
         
-        // Rimuoviamo istantaneamente sia dalla lista principale che da quella filtrata
-        this.localProducts = this.localProducts.filter(p => p._id !== productId);
-        this.filteredProducts = this.filteredProducts.filter(p => p._id !== productId);
+        // Rimuoviamo la singola location dall'array del prodotto
+        product.locations = product.locations.filter((loc: any) => loc._id !== product._id);
         
-        this.showToast('Prodotto eliminato con successo', 'success');
+        if (product.locations.length === 0) {
+          // Era l'unica location rimasta: scompare l'intero prodotto dalla lista
+          this.localProducts = this.localProducts.filter(p => p !== product);
+          this.filteredProducts = this.filteredProducts.filter(p => p !== product);
+        } else {
+          // C'erano altre location: switchiamo automaticamente al negozio precedente
+          const nextLoc = product.locations[0];
+          product._id = nextLoc._id;
+          product.store = nextLoc.store;
+          product.currentPrice = nextLoc.price;
+        }
+        
+        this.showToast('Rilevazione eliminata con successo', 'success');
       } catch (error) {
         console.error(error);
         this.showToast('Errore durante l\'eliminazione', 'danger');
@@ -125,7 +183,7 @@ export class PriceComparisonPage implements OnInit {
   }
 
   // ==========================================
-  // 4. ORDINAMENTO E RICERCA (Dalla Dashboard)
+  // 4. ORDINAMENTO E RICERCA
   // ==========================================
   async presentSortOptions() {
     const actionSheet = await this.actionSheetController.create({
@@ -157,10 +215,8 @@ export class PriceComparisonPage implements OnInit {
 
   sortProducts(order: 'asc' | 'desc' | 'default') {
     if (order === 'default') {
-      // Ripristiniamo l'ordine originale e filtriamo di nuovo in caso ci sia testo nella barra
       this.filteredProducts = [...this.localProducts];
       if (this.searchQuery) this.filterProducts();
-      
       this.showToast('Prodotti ordinati per data di aggiunta', 'primary');
       return; 
     }
@@ -178,15 +234,12 @@ export class PriceComparisonPage implements OnInit {
 
   filterProducts() {
     const query = this.searchQuery.toLowerCase().trim();
-    
     if (!query) {
       this.filteredProducts = [...this.localProducts];
       return;
     }
-
     this.filteredProducts = this.localProducts.filter(p => 
-      p.name.toLowerCase().includes(query) || 
-      (p.barcode && p.barcode.includes(query))
+      p.name.toLowerCase().includes(query) || (p.barcode && p.barcode.includes(query))
     );
   }
 

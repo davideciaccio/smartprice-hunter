@@ -325,6 +325,83 @@ body {
   &:hover { background: rgba(10, 17, 40, 0.15); }
 }
 
+/* Aggiungi questa sezione in fondo al tuo price-comparison.page.scss */
+
+/* === STILE PER TENDINA STORE (NUOVO) === */
+.store-selector {
+  position: relative;
+  display: inline-block;
+  
+  .store-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--app-text-midnight);
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-left: -8px; // Allinea visivamente col prezzo
+    border-radius: 6px;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    
+    strong { font-weight: 700; }
+
+    &:hover { 
+      background: rgba(10, 17, 40, 0.05); 
+    }
+    
+    .dropdown-icon {
+      width: 16px;
+      height: 16px;
+      fill: var(--app-text-midnight);
+      transition: transform 0.2s ease;
+      &.open { transform: rotate(180deg); } // Ruota l'icona
+    }
+  }
+  
+  .store-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    background: var(--app-white);
+    border: 1px solid var(--app-border-light);
+    box-shadow: 0 4px 15px rgba(10, 17, 40, 0.15);
+    border-radius: 8px;
+    min-width: 220px;
+    overflow: hidden;
+    margin-top: 4px;
+    
+    .store-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s ease;
+      
+      .store-name { 
+        color: var(--app-text-midnight); 
+        font-weight: 500; 
+      }
+      .store-price { 
+        color: var(--app-accent-eggplant); 
+        font-weight: 700; 
+      }
+      
+      &:hover { 
+        background: rgba(10, 17, 40, 0.05); 
+      }
+      &.selected { 
+        background: rgba(10, 17, 40, 0.08); 
+        .store-name { font-weight: 700; }
+      }
+    }
+  }
+}
+
+
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
   .topbar {
