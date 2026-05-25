@@ -422,4 +422,26 @@ body {
   }
 
   .main-content { padding: 1rem; }
+ 
+  .map-header {
+    .header-flex-container {
+      flex-direction: column; /* Dispone la ricerca e i bottoni uno sotto l'altro */
+      align-items: flex-start; /* Allinea a sinistra */
+      gap: 1rem; /* Riduce lo spazio tra gli elementi */
+    }
+
+    .search-wrapper {
+      max-width: 100%; /* Permette alla barra di ricerca di occupare il 100% della larghezza su mobile */
+    }
+
+    .nearby-control-group {
+      width: 100%;
+      align-items: flex-start; /* Sposta i bottoni e il testo a sinistra */
+
+      .instruction-text {
+        text-align: left; /* Allinea il piccolo testo descrittivo a sinistra */
+      }
+    }
+  }
 }
+

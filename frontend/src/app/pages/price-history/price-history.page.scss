@@ -126,6 +126,30 @@ body {
   }
 
   .main-content { padding: 1rem; }
+  
+  /* ==========================================
+     FIX: DISPOSIZIONE IN COLONNA DELLA BARRA RICERCA
+     ========================================== */
+  .data-section .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .table-controls {
+      width: 100%;
+      flex-wrap: wrap; 
+      
+      .search-wrapper {
+        flex: 1; 
+        width: 100%;
+        
+        .search-input { 
+          width: 100%; 
+          min-width: 100%; /* Rimuove il limite dei 250px del desktop per adattarsi al telefono */
+        }
+      }
+    }
+  }
 }
 
 /* Aggiungi in fondo al file price-history.page.scss */
