@@ -1,5 +1,6 @@
 const ScannedProduct = require('../models/ScannedProduct');
 const axios = require('axios');
+const Notice = require('../models/Notices');
 
 // --- 1. SALVATAGGIO PRODOTTO ---
 exports.saveScannedProduct = async (req, res) => {
@@ -40,6 +41,31 @@ exports.saveScannedProduct = async (req, res) => {
         upsert: true  
       }
     );
+
+    // =========================================================
+    // NUOVO: LOGICA NOTIFICA "OCCASIONE IN ZONA" (CROWDSOURCING)
+    // =========================================================
+    // Cerchiamo altri utenti che hanno lo stesso prodotto nella loro lista,
+    // ma con un prezzo MAGGIORE di quello appena trovato.
+    const interestedUsers = await ScannedProduct.find({
+      barcode: barcode,
+      user: { $ne: userId }, // Escludiamo l'utente che sta scansionando (non vogliamo auto-notificarci)
+      currentPrice: { $gt: price } // Solo se il loro prezzo salvato è più alto di questa nuova occasione
+    }).distinct('user'); // Vogliamo una lista di ID utente unici (evita doppie notifiche se hanno scansionato più volte)
+
+    // Creiamo una notifica per ciascun utente interessato
+    if (interestedUsers.length > 0) {
+      const noticesToCreate = interestedUsers.map(targetUserId => ({
+        user: targetUserId,
+        title: 'Occasione in Zona! 📍 ',
+        message: `Un utente ha appena segnalato "${name}" a soli €${Number(price).toFixed(2)} presso ${store.name}. Controlla la mappa!`,
+        type: 'price_drop'
+      }));
+
+      await Notice.insertMany(noticesToCreate);
+      console.log(`[NOTIFICA COMMUNITY] Avvisati ${interestedUsers.length} utenti per un prezzo locale più basso di ${name}.`);
+    }
+    // =========================================================
 
     res.status(200).json({ 
       message: 'Dati salvati correttamente per questo punto vendita', 

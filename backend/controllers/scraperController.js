@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const Product = require('../models/Product');
+const Notice = require('../models/Notices');
 
 // =======================================================================
 // MOTORE CONDIVISO: Lo usano sia il Frontend che il Cron Job
@@ -170,6 +171,17 @@ const addProduct = async (req, res) => {
         });
 
         await newProduct.save();
+
+        // ========================================================
+        // NUOVO: CREAZIONE NOTIFICA DI SISTEMA IN AUTOMATICO
+        // ========================================================
+        await Notice.create({
+            user: req.user.userId,
+            title: 'Nuovo monitoraggio attivo 🎯',
+            message: `Hai iniziato a monitorare "${scrapedData.title}". Ti avviseremo noi non appena il prezzo scende!`,
+            type: 'system'
+        });
+        // ========================================================
 
         res.status(201).json({ message: 'Prodotto aggiunto con successo!', product: newProduct });
 
