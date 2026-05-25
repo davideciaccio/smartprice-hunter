@@ -5,6 +5,7 @@ $text-midnight: var(--app-text-midnight);
 $white: var(--app-white);
 $accent-eggplant: var(--app-accent-eggplant);
 $border-light: var(--app-border-light);
+$danger: #d9534f;
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -43,6 +44,25 @@ body {
           color: $white; opacity: 0.65; text-decoration: none; font-weight: 500;
           font-size: 0.95rem; transition: all 0.2s ease; cursor: pointer;
           .nav-icon { width: 20px; height: 20px; fill: currentColor; transition: fill 0.2s ease; }
+          .icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            
+            .notification-badge {
+              position: absolute;
+              top: -4px;
+              right: -4px;
+              width: 10px;
+              height: 10px;
+              background-color: $danger;
+              border-radius: 50%;
+              border: 2px solid $text-midnight; 
+            }
+          }
           &:hover { background-color: rgba(255, 255, 255, 0.05); opacity: 1; }
         }
         &.active a {

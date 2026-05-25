@@ -1,18 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-
-export interface Notice {
-  id: string;
-  title: string;
-  message: string;
-  type: 'price_drop' | 'alert' | 'system';
-  timestamp: string;
-  read: boolean;
-}
-
+import { NoticeService } from '../../services/notices.service';
+import { Subscription } from 'rxjs'; 
 @Component({
   selector: 'app-notices',
   templateUrl: './notices.page.html',
@@ -20,57 +12,54 @@ export interface Notice {
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
-export class NoticesPage implements OnInit {
+export class NoticesPage implements OnInit, OnDestroy {
   isSidebarActive: boolean = false; 
   activeFilter: 'all' | 'unread' | 'prices' | 'system' = 'all';
 
-  notices: Notice[] = [
-    {
-      id: 'n1',
-      title: 'Calo di prezzo rilevato!',
-      message: 'Ottime notizie: il prezzo di Apple iPhone 15 Pro da Euronics è sceso a 999€ (-15%).',
-      type: 'price_drop',
-      timestamp: '10 min fa',
-      read: false
-    },
-    {
-      id: 'n2',
-      title: 'Attenzione ai trend',
-      message: 'Il prezzo di Sony PlayStation 5 sta salendo costantemente negli ultimi 3 giorni. Valuta se acquistare ora.',
-      type: 'alert',
-      timestamp: '2 ore fa',
-      read: false
-    },
-    {
-      id: 'n3',
-      title: 'Nuova funzionalità disponibile',
-      message: 'Abbiamo aggiornato la mappa! Ora puoi vedere i prezzi scansionati dagli altri utenti in tempo reale.',
-      type: 'system',
-      timestamp: '1 giorno fa',
-      read: true
-    },
-    {
-      id: 'n4',
-      title: 'Occasione in zona!',
-      message: 'Un utente ha segnalato AirPods Pro a 199€ presso il negozio Unieuro a 3km da te.',
-      type: 'price_drop',
-      timestamp: '2 giorni fa',
-      read: true
+  notices: any[] = [];
+  
+  // Variabili per il bollino dinamico
+  unreadCount: number = 0;
+  private unreadSub!: Subscription;
+
+  constructor(
+    private toastCtrl: ToastController,
+    private noticeService: NoticeService
+  ) {}
+
+  ngOnInit() {
+    this.loadNotices();
+    
+    // Ci iscriviamo al "canale" del bollino rosso. Ogni volta che il numero cambia, si aggiorna qui!
+    this.unreadSub = this.noticeService.unreadCount$.subscribe(count => {
+      this.unreadCount = count;
+    });
+  }
+
+  ngOnDestroy() {
+    // Buona pratica: chiudiamo la connessione quando usciamo dalla pagina
+    if (this.unreadSub) {
+      this.unreadSub.unsubscribe();
     }
-  ];
-
-  constructor(private toastCtrl: ToastController) {}
-
-  ngOnInit() {}
+  }
 
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }
   closeSidebar() { this.isSidebarActive = false; }
 
-  // FIX TASK 1: Controlla se ci sono messaggi non letti per il bollino rosso
-  get hasUnreadNotices(): boolean {
-    return this.notices.some(n => !n.read);
+  // 1. CARICA AVVISI DAL DATABASE
+  loadNotices() {
+    this.noticeService.getNotices().subscribe({
+      next: (data) => {
+        this.notices = data;
+      },
+      error: (err) => {
+        console.error('Errore nel caricamento avvisi:', err);
+        this.showToast('Impossibile caricare gli avvisi.', 'danger');
+      }
+    });
   }
 
+  // GESTIONE FILTRI DELLA UI
   get filteredNotices() {
     return this.notices.filter(n => {
       if (this.activeFilter === 'unread') return !n.read;
@@ -84,29 +73,49 @@ export class NoticesPage implements OnInit {
     this.activeFilter = filter;
   }
 
+  // 2. SEGNA UN AVVISO COME LETTO
   markAsRead(id: string) {
-    const notice = this.notices.find(n => n.id === id);
-    if (notice) {
-      notice.read = true;
-    }
+    this.noticeService.markAsRead(id).subscribe({
+      next: () => {
+        // Aggiorniamo la UI localmente per non dover ricaricare tutto dal database
+        const notice = this.notices.find(n => n._id === id);
+        if (notice) notice.read = true;
+        
+        // Ricalcoliamo il numero dei non letti e avvisiamo il Service
+        const newUnreadCount = this.notices.filter(n => !n.read).length;
+        this.noticeService.updateUnreadCount(newUnreadCount);
+      }
+    });
   }
 
+  // 3. SEGNA TUTTI COME LETTI
   markAllAsRead() {
-    this.notices.forEach(n => n.read = true);
-    this.showToast('Tutti gli avvisi segnati come letti.', 'success');
+    this.noticeService.markAllAsRead().subscribe({
+      next: () => {
+        this.notices.forEach(n => n.read = true);
+        this.showToast('Tutti gli avvisi segnati come letti.', 'success');
+        // Il service azzera il counter in automatico
+      }
+    });
   }
 
+  // 4. ELIMINA AVVISO
   deleteNotice(id: string) {
-    this.notices = this.notices.filter(n => n.id !== id);
-    this.showToast('Avviso eliminato.', 'dark');
+    this.noticeService.deleteNotice(id).subscribe({
+      next: () => {
+        this.notices = this.notices.filter(n => n._id !== id);
+        this.showToast('Avviso eliminato.', 'dark');
+        
+        // Se eliminiamo un avviso non letto, dobbiamo aggiornare il bollino!
+        const newUnreadCount = this.notices.filter(n => !n.read).length;
+        this.noticeService.updateUnreadCount(newUnreadCount);
+      }
+    });
   }
 
   async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      color,
-      position: 'bottom'
+      message, duration: 2000, color, position: 'bottom'
     });
     toast.present();
   }

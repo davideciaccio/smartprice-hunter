@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ProductService } from 'src/app/services/product'; // Assicurati che il percorso sia corretto
 import { Chart, registerables } from 'chart.js';
+import { NoticeService } from 'src/app/services/notices.service';
 
 // Registra i componenti di Chart.js
 Chart.register(...registerables);
@@ -28,14 +29,19 @@ export class PriceHistoryPage implements OnInit {
   isModalOpen: boolean = false;
   selectedProduct: any = null;
   modalChart: any = null;
+
+  unreadCount: number = 0;
+
   
   // Memorizza i grafici attivi per poterli distruggere prima di ricrearli
   charts: { [key: string]: Chart } = {};
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService, private noticeService: NoticeService) {}
 
   ngOnInit() {
     this.loadProducts();
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
   }
 
   // ==========================================

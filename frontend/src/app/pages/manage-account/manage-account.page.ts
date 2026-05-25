@@ -6,6 +6,7 @@ import { IonicModule, ToastController, AlertController } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router'; 
 // IMPORTANTE: Aggiungiamo HttpHeaders per gestire l'autenticazione
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { NoticeService } from '../../services/notices.service';
 
 @Component({
   selector: 'app-manage-account', // Lascia quello generato da Ionic
@@ -28,6 +29,7 @@ export class ManageAccountPage implements OnInit {
   showConfirmPassword = false;
   passwordStrength = 0;
   newPasswordError = '';
+  unreadCount: number = 0;
   
   private apiUrl = 'http://localhost:3000/api/account'; 
 
@@ -36,11 +38,14 @@ export class ManageAccountPage implements OnInit {
     private http: HttpClient,
     private toastController: ToastController,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private noticeService: NoticeService
   ) {}
 
   ngOnInit() {
     this.initForms();
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
   }
 
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }

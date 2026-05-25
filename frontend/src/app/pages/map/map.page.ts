@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'; // IMPORTANTE: A
 import { lastValueFrom } from 'rxjs';
 import * as L from 'leaflet';
 import { AuthService } from '../../services/auth';
+import { NoticeService } from 'src/app/services/notices.service';
 
 @Component({
   selector: 'app-map',
@@ -29,9 +30,14 @@ export class MapPage implements OnInit, AfterViewInit {
   private map: any;
   private userMarker: any;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  unreadCount: number = 0;
 
-  ngOnInit() {}
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {}
+
+  ngOnInit() {
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
+  }
 
   ngAfterViewInit() {
     this.initMap();

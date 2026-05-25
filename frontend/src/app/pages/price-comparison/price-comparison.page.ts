@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController, ActionSheetController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ComparisonService } from '../../services/comparison.service'; 
+import { NoticeService } from 'src/app/services/notices.service';
 
 @Component({
   selector: 'app-price-comparison',
@@ -20,14 +21,19 @@ export class PriceComparisonPage implements OnInit {
   localProducts: any[] = [];
   isLoadingLocal: boolean = true;
 
+  unreadCount: number = 0;
+
   constructor(
     private comparisonService: ComparisonService,
     private toastCtrl: ToastController,
-    private actionSheetController: ActionSheetController // <-- Aggiunto controller per il sort
+    private actionSheetController: ActionSheetController, // <-- Aggiunto controller per il sort
+    private noticeService: NoticeService
   ) {}
 
   ngOnInit() {
     this.loadLocalProducts();
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
   }
 
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }

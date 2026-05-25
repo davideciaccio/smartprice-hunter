@@ -84,3 +84,6 @@ app.use('/api/admin', adminRoutes);
 const comparisonRoutes = require('./routes/comparison'); 
 // Montiamo la rotta sotto il percorso /api/compare
 app.use('/api/compare', comparisonRoutes);
+
+const noticeRoutes = require('./routes/notices');
+app.use('/api/notices', noticeRoutes);

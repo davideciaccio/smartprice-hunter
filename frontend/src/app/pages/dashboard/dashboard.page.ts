@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActionSheetController, IonicModule, ToastController } from '@ionic/angular';
 import { ProductService } from 'src/app/services/product';
 import { RouterModule } from '@angular/router';
+import { NoticeService } from '../../services/notices.service'; 
 
 @Component({
   selector: 'app-dashboard',
@@ -23,15 +24,19 @@ export class DashboardPage implements OnInit {
   totalProducts: number = 0;
   changesToday: number = 0;
   changesWeek: number = 0;
+  unreadCount: number = 0;
 
   constructor(
     private productService: ProductService,
     private toastController: ToastController, 
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private noticeService: NoticeService
   ) {}
 
   ngOnInit() {
     this.loadProducts();
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
   }
 
   toggleSidebar() {

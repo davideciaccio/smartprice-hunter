@@ -3,6 +3,7 @@ $text-midnight: var(--app-text-midnight);
 $white: var(--app-white);
 $accent-eggplant: var(--app-accent-eggplant);
 $border-light: var(--app-border-light);
+$danger: #d9534f;
 
 // ==========================================
 // 1. RESET E BASE
@@ -89,6 +90,26 @@ body {
             height: 20px;
             fill: currentColor;
             transition: fill 0.2s ease;
+          }
+
+          .icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            
+            .notification-badge {
+              position: absolute;
+              top: -4px;
+              right: -4px;
+              width: 10px;
+              height: 10px;
+              background-color: $danger;
+              border-radius: 50%;
+              border: 2px solid $text-midnight; 
+            }
           }
 
           &:hover {

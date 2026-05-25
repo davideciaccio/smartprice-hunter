@@ -5,6 +5,7 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
+import { NoticeService } from '../../services/notices.service';
 
 // Plugin ufficiale Capacitor
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
@@ -31,10 +32,14 @@ export class CameraPage implements OnInit {
   nearbyStores: any[] = [];
   filteredStores: any[] = [];
   isLoadingStores: boolean = false;
+  unreadCount: number = 0;
 
-  constructor(private http: HttpClient, private toastCtrl: ToastController) {}
+  constructor(private http: HttpClient, private toastCtrl: ToastController, private noticeService: NoticeService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.noticeService.unreadCount$.subscribe(c => this.unreadCount = c);
+    this.noticeService.getNotices().subscribe();
+  }
 
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }
   closeSidebar() { this.isSidebarActive = false; }
