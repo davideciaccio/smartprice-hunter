@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
   // L'URL del nostro backend Node.js
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = '/api/auth';
 
   constructor(private http: HttpClient) { }
 

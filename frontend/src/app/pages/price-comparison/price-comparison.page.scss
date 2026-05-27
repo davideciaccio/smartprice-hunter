@@ -325,9 +325,7 @@ body {
   &:hover { background: rgba(10, 17, 40, 0.15); }
 }
 
-/* Aggiungi questa sezione in fondo al tuo price-comparison.page.scss */
-
-/* === STILE PER TENDINA STORE (NUOVO) === */
+/* === STILE PER TENDINA STORE === */
 .store-selector {
   position: relative;
   display: inline-block;
@@ -340,7 +338,7 @@ body {
     color: var(--app-text-midnight);
     cursor: pointer;
     padding: 4px 8px;
-    margin-left: -8px; // Allinea visivamente col prezzo
+    margin-left: -8px; 
     border-radius: 6px;
     transition: background 0.2s ease, box-shadow 0.2s ease;
     
@@ -355,7 +353,7 @@ body {
       height: 16px;
       fill: var(--app-text-midnight);
       transition: transform 0.2s ease;
-      &.open { transform: rotate(180deg); } // Ruota l'icona
+      &.open { transform: rotate(180deg); } 
     }
   }
   
@@ -432,6 +430,90 @@ body {
         min-width: 150px;
         
         .search-input { width: 100%; }
+      }
+    }
+  }
+
+  /* --- RESPONSIVE TABLE TO CARDS (Nuovo Layout a Stack Verticale) --- */
+  .data-section {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    .table-responsive {
+      overflow-x: hidden;
+    }
+
+    .products-table {
+      thead {
+        display: none; // Rimuoviamo l'intestazione standard
+      }
+
+      tbody tr {
+        display: block; // Trasformiamo le righe in card
+        margin-bottom: 1.5rem;
+        background-color: var(--app-white);
+        border: 1px solid var(--app-text-midnight);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(10, 17, 40, 0.1);
+        padding: 1rem;
+        
+        &:hover {
+          background-color: var(--app-white); 
+        }
+      }
+
+      td {
+        display: block; // Celle incolonnate per non comprimere i dati (fondamentale per le offerte)
+        width: 100%;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--app-border-light);
+        text-align: left;
+
+        &:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+
+        // Generazione dell'etichetta dinamica
+        &::before {
+          content: attr(data-label);
+          font-weight: 600;
+          font-size: 0.85rem;
+          color: rgba(10, 17, 40, 0.6);
+          display: block;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        // Stati vuoti non devono avere etichette
+        &.empty-state {
+          border: 1px dashed var(--app-border-light);
+          text-align: center;
+          padding: 2rem !important;
+          &::before { content: none; }
+        }
+
+        // Overrides specifici per la colonna Azioni per farle prendere l'intera larghezza in basso
+        &.action-cell {
+          text-align: center;
+          .btn-delete {
+            width: 100%; // Tasto a tutta larghezza su mobile
+            padding: 0.75rem;
+          }
+        }
+        
+        // Assicuriamoci che i prodotti e competitor mantengano proporzioni logiche
+        .product-cell .product-details .product-name-link {
+          max-width: 100%;
+          white-space: normal; // Su mobile il testo può andare a capo anziché troncarsi
+        }
+
+        .competitor-card {
+          min-width: unset; // Togliamo il min-width per evitare overflow orizzontale
+          width: 100%;
+        }
       }
     }
   }

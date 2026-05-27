@@ -113,22 +113,6 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
-//=== MEDIA QUERIES ===
-@media (max-width: 768px) {
-  .topbar {
-    .title-area { display: flex; align-items: center; gap: 0.5rem; }
-    .mobile-menu-toggle { display: block; }
-  }
-
-  .sidebar {
-    position: fixed !important; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
-    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    &.active { transform: translateX(0) !important; }
-  }
-
-  .main-content { padding: 1rem; }
-}
 
 /* === STILE GESTIONE ACCOUNT === */
 
@@ -150,12 +134,12 @@ body {
 }
 
 // Card senza bordi duri, galleggianti tramite drop-shadow
-.account-card {
+.account-card, .danger-card {
   background-color: $white;
   border: 1px solid $text-midnight;
   box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
   border-radius: 12px;
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
   width: 100%;
   max-width: 450px;
   position: relative;
@@ -246,15 +230,6 @@ body {
 
 // Card elimina account
 .danger-card {
-  background-color: $white;
-  border: 1px solid $text-midnight;
-  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
-  border-radius: 12px;
-  padding: 1rem 2rem;
-  width: 100%;
-  max-width: 450px;
-  position: relative;
-  z-index: 2;
 
   .danger-title {
     color: #dc2626 !important; // Rosso deciso per il titolo
@@ -289,6 +264,7 @@ body {
       border-color: #dc2626;
     }
   }
+}
 
 
 // ==========================================================================
@@ -298,12 +274,12 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%; /* FIX 1: Forza il contenitore a occupare tutto lo spazio orizzontale */
+  width: 100%; 
 
   .form-input {
-    flex: 1; /* FIX 2: Forza l'input a espandersi per riempire il contenitore */
+    flex: 1; 
     width: 100%;
-    padding-right: 2.5rem; /* Fa spazio all'icona occhio */
+    padding-right: 2.5rem; 
   }
 
   .eye-btn {
@@ -328,23 +304,22 @@ body {
   }
 }
 
-  // Barra per la forza della password
-  .strength-meter {
-    height: 4px;
-    background-color: #eee;
-    border-radius: 2px;
-    margin-top: 0.5rem;
-    overflow: hidden;
+// Barra per la forza della password
+.strength-meter {
+  height: 4px;
+  background-color: #eee;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
 
-    .strength-bar {
-      height: 100%;
-      width: 0;
-      transition: all 0.3s ease;
+  .strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s ease;
 
-      &.weak { width: 33%; background-color: #d9534f; } /* Rosso */
-      &.medium { width: 66%; background-color: #f0ad4e; } /* Giallo */
-      &.strong { width: 100%; background-color: #5cb85c; } /* Verde */
-    }
+    &.weak { width: 33%; background-color: #d9534f; } /* Rosso */
+    &.medium { width: 66%; background-color: #f0ad4e; } /* Giallo */
+    &.strong { width: 100%; background-color: #5cb85c; } /* Verde */
   }
 }
 
@@ -364,5 +339,33 @@ body {
 
   &:hover {
     opacity: 0.9;
+  }
+}
+
+//=== MEDIA QUERIES ===
+@media (max-width: 768px) {
+  .topbar {
+    .title-area { display: flex; align-items: center; gap: 0.5rem; }
+    .mobile-menu-toggle { display: block; }
+  }
+
+  .sidebar {
+    position: fixed !important; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    &.active { transform: translateX(0) !important; }
+  }
+
+  .main-content { padding: 1rem; }
+
+  /* OTTIMIZZAZIONI WIZARD E CARD PER MOBILE */
+  .account-container {
+    padding-bottom: 1.5rem;
+  }
+
+  .account-card, .danger-card {
+    padding: 1.5rem 1.2rem; // Ridotto il padding orizzontale per far respirare i contenuti
+    border-radius: 12px;
+    max-width: 100%; // Le card sfruttano ora l'Edge-to-Edge fluido su mobile
   }
 }

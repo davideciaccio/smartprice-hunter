@@ -93,47 +93,6 @@ $white: var(--app-white, #FFFFFF);
       height: auto;
     }
 
-    /* Stili degli Input */
-    .input-group {
-      margin-bottom: 1.25rem;
-      
-      label {
-        display: block;
-        color: $text-midnight;
-        font-weight: 600;
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-      }
-      
-      input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        background-color: $white;
-        color: $text-midnight;
-        border: 1px solid $text-midnight;
-        border-radius: 8px;
-        font-size: 1rem;
-        outline: none;
-        
-        /* Previene stili predefiniti su Safari/iOS */
-        -webkit-appearance: none;
-        appearance: none;
-
-        &:-webkit-autofill,
-        &:-webkit-autofill:hover, 
-        &:-webkit-autofill:focus, 
-        &:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px $white inset !important; /* Forza lo sfondo bianco */
-            -webkit-text-fill-color: $text-midnight !important; /* Forza il testo blu notte */
-            transition: background-color 5000s ease-in-out 0s; /* Evita sfarfallii strani */
-        }
-
-        &:focus {
-          box-shadow: 0 0 0 3px rgba(10, 17, 40, 0.1); 
-        }
-      }
-    }
-
     /* Bottone Registrati */
     .btn-register {
       width: 100%;
@@ -177,20 +136,54 @@ $white: var(--app-white, #FFFFFF);
   }
 }
 
-/* Stili Aggiuntivi per Form Avanzato */
+/* Stili Aggiuntivi per Form Avanzato e Inputs */
 .input-group {
   margin-bottom: 1.25rem;
   
-  /* ... tuo css esistente per label e input ... */
+  label {
+    display: block;
+    color: $text-midnight;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background-color: $white;
+    color: $text-midnight;
+    border: 1px solid $text-midnight;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    
+    /* Previene stili predefiniti su Safari/iOS */
+    -webkit-appearance: none;
+    appearance: none;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus, 
+    &:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px $white inset !important; 
+        -webkit-text-fill-color: $text-midnight !important; 
+        transition: background-color 5000s ease-in-out 0s; 
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(10, 17, 40, 0.1); 
+    }
+  }
 
   .password-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%; /* FIX 1: Forza il contenitore a occupare tutto lo spazio orizzontale */
+    width: 100%;
 
     input {
-      flex: 1; /* FIX 2: Forza l'input a espandersi per riempire il contenitore */
+      flex: 1;
       width: 100%;
       padding-right: 2.5rem; /* Fa spazio all'icona occhio */
     }
@@ -246,49 +239,58 @@ $white: var(--app-white, #FFFFFF);
 
 
 .x-footer {
-
   padding: 15px 20px;
-
-  background-color: #FFFFFF; /* Sfondo Bianco */
-
-  border-top: 1px solid #0A1128; /* Strisciolina in Blu Notte per staccare il footer */
-
+  background-color: #FFFFFF; 
+  border-top: 1px solid #0A1128; 
   
-
   nav {
-
     display: flex;
-
     flex-wrap: wrap;
-
     justify-content: center;
-
     gap: 16px; 
-
     
-
     a, span {
-
-      color: #0A1128; /* Scritte in Blu Notte */
-
+      color: #0A1128; 
       text-decoration: none;
-
       font-size: 13px;
-
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
     }
-
-
 
     a:hover {
-
-      color: #14224f; /* Hover leggermente più chiaro */
-
+      color: #14224f; 
       text-decoration: underline;
+    }
+  }
+}
 
+
+/* === MEDIA QUERIES RESPONSIVE MOBILE === */
+@media (max-width: 768px) {
+  .register-wrapper {
+    padding: 1.5rem 1rem; /* Margini più stretti per dare respiro al form */
+    
+    h1 {
+      font-size: 1.8rem; /* Titolo scalato per evitare scroll inutili */
     }
 
-  }
+    .subtitle {
+      font-size: 1rem; /* Sottotitolo compattato */
+      margin-bottom: 1.25rem;
+    }
 
+    .register-card {
+      padding: 1.5rem 1.25rem; /* Padding interno ridotto per massimizzare la larghezza input */
+      max-width: 100%; /* Sfrutta la larghezza disponibile fluidamente */
+
+      .brand-logo {
+        max-width: 140px; /* Logo più piccolo su mobile */
+        margin: 0 auto 1.5rem auto;
+      }
+
+      .btn-register {
+        min-height: 48px; /* Touch target ergonomico come da linee guida mobile (Apple/Material) */
+        font-size: 1.05rem;
+      }
+    }
+  }
 }

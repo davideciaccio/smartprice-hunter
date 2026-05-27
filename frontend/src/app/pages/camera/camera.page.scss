@@ -75,7 +75,7 @@ body {
 /* === MAIN CONTENT === */
 .main-content {
   flex: 1; padding: 2rem; overflow-y: auto;
-  background-color: $white; // Sfondo forzato a bianco
+  background-color: $white; 
 }
 
 .topbar {
@@ -112,35 +112,74 @@ body {
 }
 
 /* ==========================================
-   STILI PAGINA FOTOCAMERA / BARCODE
+   STILI PAGINA FOTOCAMERA / WIZARD
    ========================================== */
 
 .camera-section {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding-top: 2rem;
+  align-items: flex-start;
+  padding-top: 1rem;
 }
 
-.camera-card {
-  background-color: var(--app-white, #FFFFFF);
+/* Base unificata per tutti gli step del wizard */
+.w-100 {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto; 
+}
+
+.camera-card, .custom-card {
+  background-color: var(--app-white);
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
-  border: 1px solid var(--app-text-midnight, #0A1128);
+  border: 1px solid var(--app-text-midnight);
+  overflow: hidden;
   padding: 2.5rem;
-  width: 100%;
-  max-width: 450px;
   text-align: center;
 }
 
+/* Fix padding interno per le ion-card rispetto ai div standard */
+ion-card.custom-card {
+  padding: 0;
+  margin: 0; // Ionic aggiunge un margine di default che non vogliamo
+  
+  ion-card-content {
+    padding-bottom: 20px;
+  }
+}
+
+/* Testi Prodotto */
+.product-img {
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+  padding: 20px;
+  background-color: var(--app-white);
+  border-bottom: 1px solid var(--app-border-light);
+}
+
+.product-subtitle { color: var(--app-text-midnight); font-weight: 500; }
+.product-title { color: var(--app-accent-eggplant); font-weight: 900; font-size: 1.4rem; margin-top: 5px; }
+.product-ean { color: rgba(10, 17, 40, 0.6); font-size: 0.9rem; margin-top: 5px; }
+
+.step-title {
+  color: var(--app-text-midnight);
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Pulsanti d'azione */
 .btn-scan {
-  background-color: var(--app-text-midnight, #0A1128);
-  color: var(--app-white, #FFFFFF);
+  background-color: var(--app-text-midnight);
+  color: var(--app-white);
   border: none;
   border-radius: 8px;
   width: 100%;
-  padding: 1rem;
-  font-size: 1.1rem;
+  padding: 1.1rem 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -149,179 +188,108 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  svg {
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
-  }
+  svg { width: 24px; height: 24px; fill: currentColor; }
 
   &:hover {
     opacity: 0.9;
     transform: scale(1.02);
   }
+
+  &.btn-forward {
+    margin-top: 1.5rem;
+  }
 }
 
+/* Input Styles */
 .divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 2rem 0;
-  color: rgba(10, 17, 40, 0.4);
-
-  &::before, &::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid rgba(10, 17, 40, 0.1);
-  }
-
-  span {
-    padding: 0 1rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
+  display: flex; align-items: center; text-align: center; margin: 2rem 0; color: rgba(10, 17, 40, 0.4);
+  &::before, &::after { content: ''; flex: 1; border-bottom: 1px solid rgba(10, 17, 40, 0.1); }
+  span { padding: 0 1rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; }
 }
 
 .manual-input-wrapper {
   text-align: left;
+  width: 100%;
 
   label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--app-text-midnight, #0A1128);
-    margin-bottom: 0.5rem;
+    display: block; font-size: 0.9rem; font-weight: 600;
+    color: var(--app-text-midnight); margin-bottom: 0.5rem;
   }
 
   .input-group {
-    display: flex;
-    gap: 0.5rem;
-
+    display: flex; gap: 0.5rem; width: 100%;
+    
     input {
-      flex: 1;
-      padding: 0.8rem 1rem;
-      border: 1px solid var(--app-text-midnight, #0A1128);
-      border-radius: 8px;
-      font-size: 1rem;
-      background-color: #FFFFFF !important;
-      color: var(--app-text-midnight, #0A1128) !important;
-      caret-color: var(--app-text-midnight, #0A1128);
-      outline: none;
-
-      &:focus {
-        box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1);
-      }
+      flex: 1; min-width: 0; padding: 1rem; border: 1px solid var(--app-text-midnight);
+      border-radius: 8px; font-size: 1rem; background-color: var(--app-white) !important;
+      color: var(--app-text-midnight) !important; caret-color: var(--app-text-midnight); outline: none;
+      &:focus { box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1); }
     }
 
     .btn-submit {
-      background-color: transparent;
-      color: var(--app-text-midnight, #0A1128);
-      border: 1px solid var(--app-text-midnight, #0A1128);
-      padding: 0 1.2rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:not(:disabled):hover {
-        background-color: var(--app-text-midnight, #0A1128);
-        color: var(--app-white, #FFFFFF);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
+      background-color: transparent; color: var(--app-text-midnight);
+      border: 1px solid var(--app-text-midnight); padding: 0 1.2rem;
+      border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+      flex-shrink: 0; 
+      
+      &:not(:disabled):hover { background-color: var(--app-text-midnight); color: var(--app-white); }
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
     }
   }
-}
 
-/* ==========================================
-   AGGIUNTE PER IL WIZARD (STEP 2, 3 E 4)
-   ========================================== */
-
-.w-100 {
-  width: 100%;
-  max-width: 500px;
-}
-
-.custom-card {
-  background-color: var(--app-white, #FFFFFF);
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12);
-  border: 1px solid var(--app-text-midnight, #0A1128);
-  overflow: hidden;
-
-  .product-img {
-    width: 100%;
-    height: 250px;
-    object-fit: contain;
-    padding: 20px;
-    background-color: #FFFFFF !important;
-    border-bottom: 1px solid var(--app-border-light);
-  }
-}
-
-.store-step {
-  .search-input {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid var(--app-text-midnight, #0A1128);
-    background-color: #FFFFFF !important;
-    color: var(--app-text-midnight, #0A1128) !important;
-    caret-color: var(--app-text-midnight, #0A1128);
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .loading-state {
+  &.price-input-wrapper {
     text-align: center;
-    color: var(--app-text-midnight);
-    margin: 2rem 0;
-    
-    ion-spinner { margin-bottom: 10px; }
+    label { text-align: center; margin-bottom: 1rem; font-size: 1rem; }
+    .price-input { text-align: center; font-size: 1.5rem; font-weight: 700; padding: 1rem; }
   }
+}
+
+/* Step Selezione Store */
+.store-step {
+  padding: 0; // Togliamo il padding base della card per gestirlo nelle sezioni
+  display: flex;
+  flex-direction: column;
+  
+  .store-header {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    border-bottom: 1px solid var(--app-border-light);
+    
+    .search-input {
+      width: 100%; padding: 1rem; border: 1px solid var(--app-text-midnight);
+      background-color: var(--app-white) !important; color: var(--app-text-midnight) !important;
+      border-radius: 8px; font-size: 1rem; margin-bottom: 1rem;
+      &:focus { outline: none; box-shadow: 0 0 0 2px rgba(10, 17, 40, 0.1); }
+    }
+  }
+
+  .loading-state { text-align: center; padding: 3rem 1rem; color: var(--app-text-midnight); ion-spinner { margin-bottom: 10px; } }
 
   .store-list {
-    max-height: 400px;
+    max-height: 50vh; 
     overflow-y: auto;
+    padding: 1rem;
     
     .store-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem;
-      background: var(--app-white);
-      border: 1px solid var(--app-border-light);
-      border-radius: 8px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem; background: var(--app-white);
+      border: 1px solid var(--app-border-light); border-radius: 8px; margin-bottom: 10px;
+      cursor: pointer; transition: all 0.2s ease;
 
       &:hover {
         border-color: var(--app-text-midnight);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        background-color: rgba(10, 17, 40, 0.02);
       }
 
-      .store-info h3 {
-        margin: 0 0 5px 0;
-        font-size: 1.1rem;
-        color: var(--app-accent-eggplant);
+      .store-info {
+        text-align: left;
+        h3 { margin: 0 0 5px 0; font-size: 1.05rem; color: var(--app-accent-eggplant); font-weight: 700; }
+        p { margin: 0; font-size: 0.85rem; color: rgba(10, 17, 40, 0.6); }
       }
-      .store-info p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: rgba(10, 17, 40, 0.6);
-      }
+
+      ion-icon { color: var(--app-text-midnight); font-size: 1.2rem; }
     }
 
-    .no-results {
-      text-align: center;
-      padding: 2rem;
-      color: rgba(10, 17, 40, 0.5);
-    }
+    .no-results { text-align: center; padding: 2rem; color: rgba(10, 17, 40, 0.5); }
   }
 }
 
@@ -339,5 +307,28 @@ body {
     &.active { transform: translateX(0) !important; }
   }
 
-  .main-content { padding: 1rem; }
+  .main-content { 
+    padding: 1rem; 
+  }
+
+  /* --- FLUSSO WIZARD MOBILE NATIVO --- */
+  .camera-section {
+    padding-top: 0;
+  }
+
+  .w-100 {
+    /* Su mobile i wizard sfruttano il 100% effettivo, rimuoviamo le restrizioni e i bordi laterali per un native feel */
+    max-width: 100%;
+    border-radius: 12px; 
+  }
+
+  .camera-card {
+    padding: 1.5rem; /* Padding ridotto su smartphone per lasciare respiro ai contenuti */
+  }
+
+  .store-step {
+    .store-list {
+      max-height: 60vh; /* Permettiamo alla lista di occupare più spazio verticale utile sul telefono */
+    }
+  }
 }

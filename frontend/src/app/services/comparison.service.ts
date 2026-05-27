@@ -7,7 +7,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class ComparisonService {
   // L'URL base del tuo backend Node.js
-  private baseUrl = 'http://localhost:3000/api';
+  private baseUrl = '/api';
 
   constructor(private http: HttpClient) { }
 

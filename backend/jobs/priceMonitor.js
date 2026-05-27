@@ -1,13 +1,13 @@
 const cron = require('node-cron');
 const Product = require('../models/Product');
-const Notice = require('../models/Notices'); // <--- AGGIUNTO IL MODELLO DELLE NOTIFICHE
+const Notice = require('../models/Notices'); 
 
-// Importiamo la funzione di scraping esattamente dal controller
+// Importiamo la funzione di scraping dal controller
 const { runScrapingEngine } = require('../controllers/scraperController');
 
 const startPriceMonitor = () => {
-    // Sintassi Cron: '*/5 * * * *' = Esegui ogni 5 minuti
-    // Sintassi Cron: '0 */3 * * *' = Esegui ogni 3 ore
+    // Sintassi Cron: '*/5 * * * *' => Esegui ogni 5 minuti
+    // Sintassi Cron: '0 */3 * * *' => Esegui ogni 3 ore
     cron.schedule('0 */3 * * *', async () => {
         console.log('[CRON JOB] Avvio controllo prezzi in background...');
 
@@ -25,7 +25,7 @@ const startPriceMonitor = () => {
                 console.log(`Analisi di: ${product.name}...`);
                 
                 try {
-                    // CHIAMIAMO IL MOTORE DAL CONTROLLER (STESSA IDENTICA LOGICA!)
+                    // Chiamiamo la funzione del controller
                     const scrapedData = await runScrapingEngine(product.url);
                     
                     // Controlliamo che il motore non abbia fallito

@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import { ProductService } from 'src/app/services/product'; // Assicurati che il percorso sia corretto
+import { ProductService } from 'src/app/services/product'; 
 import { Chart, registerables } from 'chart.js';
 import { NoticeService } from 'src/app/services/notices.service';
 
-// Registra i componenti di Chart.js
 Chart.register(...registerables);
 
 @Component({
@@ -20,20 +19,16 @@ Chart.register(...registerables);
 export class PriceHistoryPage implements OnInit {
   isSidebarActive: boolean = false; 
   
-  // Variabili per la ricerca
   searchQuery: string = '';
   products: any[] = [];
   originalProducts: any[] = [];
 
-  // Variabili per il grafico modale
   isModalOpen: boolean = false;
   selectedProduct: any = null;
   modalChart: any = null;
 
   unreadCount: number = 0;
-
   
-  // Memorizza i grafici attivi per poterli distruggere prima di ricrearli
   charts: { [key: string]: Chart } = {};
 
   constructor(private productService: ProductService, private noticeService: NoticeService) {}
@@ -44,22 +39,15 @@ export class PriceHistoryPage implements OnInit {
     this.noticeService.getNotices().subscribe();
   }
 
-  // ==========================================
-  // SIDEBAR LOGIC
-  // ==========================================
   toggleSidebar() { this.isSidebarActive = !this.isSidebarActive; }
   closeSidebar() { this.isSidebarActive = false; }
 
-  // ==========================================
-  // CARICAMENTO E RICERCA
-  // ==========================================
   loadProducts() {
     this.productService.getUserProducts().subscribe({
       next: (data) => {
         this.products = [...data];
         this.originalProducts = [...data];
         
-        // Disegna i grafici in miniatura dopo che l'HTML si è aggiornato
         setTimeout(() => this.renderMiniCharts(), 200);
       },
       error: (err) => console.error('Errore', err)
@@ -75,7 +63,6 @@ export class PriceHistoryPage implements OnInit {
         product.name.toLowerCase().includes(query)
       );
     }
-    // Ridisegna i grafici per i prodotti filtrati
     setTimeout(() => this.renderMiniCharts(), 200);
   }
 
@@ -85,19 +72,14 @@ export class PriceHistoryPage implements OnInit {
     setTimeout(() => this.renderMiniCharts(), 200);
   }
 
-  // ==========================================
-  // LOGICA GRAFICI (CHART.JS)
-  // ==========================================
-  
-  // Colora i segmenti della linea in base alla pendenza
   segmentColorConfig = {
     borderColor: (ctx: any) => {
       if (!ctx.p0 || !ctx.p1) return 'rgba(10, 17, 40, 0.2)';
       const prev = ctx.p0.parsed.y;
       const curr = ctx.p1.parsed.y;
-      if (curr > prev) return '#d9534f'; // Sale -> Rosso
-      if (curr < prev) return '#5cb85c'; // Scende -> Verde
-      return 'rgba(10, 17, 40, 0.2)';    // Stabile -> Grigio neutro
+      if (curr > prev) return '#d9534f'; 
+      if (curr < prev) return '#5cb85c'; 
+      return 'rgba(10, 17, 40, 0.2)';    
     }
   };
 
@@ -108,7 +90,6 @@ export class PriceHistoryPage implements OnInit {
       
       if (!canvas || !product.priceHistory) return;
 
-      // Se esiste già un grafico per questo prodotto, lo distruggiamo
       if (this.charts[product._id]) {
         this.charts[product._id].destroy();
       }
@@ -126,7 +107,7 @@ export class PriceHistoryPage implements OnInit {
             pointRadius: 3,
             pointHoverRadius: 6,
             fill: false,
-            tension: 0.1, // Linea leggermente tesa
+            tension: 0.1, 
             segment: this.segmentColorConfig
           }]
         },
@@ -150,14 +131,10 @@ export class PriceHistoryPage implements OnInit {
     });
   }
 
-  // ==========================================
-  // MODALE GRAFICO ESPANSO
-  // ==========================================
   openChartModal(product: any) {
     this.selectedProduct = product;
     this.isModalOpen = true;
 
-    // Disegna il grafico grande dopo che la modale si è aperta
     setTimeout(() => {
       const canvas = document.getElementById('modalCanvas') as HTMLCanvasElement;
       if (!canvas) return;
@@ -197,12 +174,12 @@ export class PriceHistoryPage implements OnInit {
             x: { 
               display: true,
               ticks: {
-                color: '#b0b0b0', // Date in grigio chiaro
+                color: '#b0b0b0',
                 font: { size: 11 }
               },
               grid: {
                 display: true,
-                color: '#e0e0e0', // Linee verticali grigio chiaro
+                color: '#e0e0e0', 
                 drawTicks: false
               }
             },
@@ -210,12 +187,12 @@ export class PriceHistoryPage implements OnInit {
               display: true, 
               beginAtZero: false,
               ticks: {
-                color: '#b0b0b0', // Prezzi in grigio chiaro
+                color: '#b0b0b0', 
                 font: { size: 11 }
               },
               grid: {
                 display: true,
-                color: '#e0e0e0', // Linee orizzontali grigio chiaro
+                color: '#e0e0e0', 
                 drawTicks: false
               }
             }

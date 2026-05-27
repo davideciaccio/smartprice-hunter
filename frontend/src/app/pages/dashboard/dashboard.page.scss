@@ -16,7 +16,7 @@ $danger: #d9534f;
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: $white; // Sfondo cambiato in Bianco
+  background-color: $white; 
   color: $text-midnight;
   overflow-x: hidden;
 }
@@ -30,7 +30,7 @@ body {
 }
 
 // ==========================================
-// 3. SIDEBAR (Tema Dark/Blu Notte)
+// 3. SIDEBAR
 // ==========================================
 .sidebar {
   width: 250px;
@@ -119,7 +119,6 @@ body {
         }
 
         &.active a {
-          /* FIX: Sfondo grigio/bianco semitrasparente neutro e bordo laterale bianco puro */
           background-color: rgba(255, 255, 255, 0.1); 
           color: $white;
           opacity: 1;
@@ -138,7 +137,7 @@ body {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  background-color: $white; // Assicuriamo che anche il main sia bianco
+  background-color: $white; 
 }
 
 .topbar {
@@ -165,7 +164,6 @@ body {
 // ==========================================
 .kpi-grid {
   display: grid;
-  /* Cambiato per adattarsi a 2 card invece di 4 */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
   gap: 1.5rem;
   margin-bottom: 2rem;
@@ -174,13 +172,12 @@ body {
     background-color: $white;
     padding: 1.5rem;
     border-radius: 12px;
-    /* NUOVO: Bordo 1px Blu Notte e Ombra per contrasto */
     border: 1px solid $text-midnight; 
     box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12); 
 
     h3 {
       font-size: 0.9rem;
-      color: $text-midnight; // Colore scritte Blu Notte
+      color: $text-midnight; 
       margin-bottom: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -190,7 +187,7 @@ body {
     .value {
       font-size: 2.2rem;
       font-weight: 700;
-      color: $text-midnight; // Colore scritte Blu Notte
+      color: $text-midnight; 
       margin-bottom: 0.5rem;
 
       small {
@@ -202,23 +199,22 @@ body {
 
     p {
       font-size: 0.85rem;
-      color: $text-midnight; // Colore scritte Blu Notte
+      color: $text-midnight; 
       opacity: 0.7;
     }
   }
 }
+
 // ==========================================
 // 6. WIDGET ADD PRODUCT (SCRAPING)
 // ==========================================
 .scraping-trigger-section {
-  margin-bottom: 2rem; // Mantiene lo spazio sotto la card
+  margin-bottom: 2rem; 
 
   .scraping-widget {
     background-color: $white;
-    padding: 1.5rem; // Aggiunto padding per far respirare il contenuto
-    border-radius: 12px; // Arrotondamento come le altre card
-    
-    /* FIX: Bordo continuo blu notte e ombra identica alle KPI card */
+    padding: 1.5rem; 
+    border-radius: 12px; 
     border: 1px solid $text-midnight; 
     box-shadow: 0 6px 15px rgba(10, 17, 40, 0.12); 
 
@@ -243,13 +239,11 @@ body {
 
         &:focus {
           outline: none;
-          /* Focus del form reso Blu Notte al posto del viola */
           border-color: $text-midnight; 
         }
       }
 
       .btn-eggplant {
-        /* FIX: Sfondo e bordo Blu Notte */
         background-color: $text-midnight !important; 
         border: 1px solid $text-midnight !important; 
         color: $white;
@@ -261,7 +255,7 @@ body {
         transition: all 0.2s;
 
         &:hover {
-          filter: brightness(0.9); // Schiarisce leggermente al passaggio del mouse
+          filter: brightness(0.9); 
         }
       }
     }
@@ -315,17 +309,16 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem; /* Spazio tra icona e testo */
+        gap: 0.4rem; 
 
         .sort-icon {
-          width: 18px;     /* Blocca la larghezza dell'icona */
-          height: 18px;    /* Blocca l'altezza dell'icona */
+          width: 18px;     
+          height: 18px;    
           fill: currentColor;
-          flex-shrink: 0;  /* Impedisce all'icona di rimpicciolirsi se manca spazio */
+          flex-shrink: 0;  
         }
       }
 
-      /* --- STILI DELLA BARRA DI RICERCA CON ICONA --- */
       .search-wrapper {
         position: relative;
         display: flex;
@@ -337,17 +330,16 @@ body {
           width: 18px;
           height: 18px;
           fill: rgba(10, 17, 40, 0.4);
-          cursor: pointer; // Ora indica che è cliccabile
+          cursor: pointer; 
           z-index: 2;
           transition: fill 0.2s;
 
           &:hover {
-            fill: var(--app-accent-eggplant); // Cambia colore al passaggio
+            fill: var(--app-accent-eggplant); 
           }
         }
 
         .search-input {
-          /* Aumentato padding-right a 2.5rem per far spazio alla X */
           padding: 0.5rem 2.5rem 0.5rem 2.2rem; 
           border: 1px solid $text-midnight;
           border-radius: 6px;
@@ -358,7 +350,6 @@ body {
           appearance: none;
           -webkit-appearance: none;
 
-          /* Rimuove la X di default dei browser per usare la nostra */
           &::-webkit-search-decoration,
           &::-webkit-search-cancel-button,
           &::-webkit-search-results-button,
@@ -390,7 +381,7 @@ body {
           }
 
           &:hover svg {
-            fill: var(--app-danger); // Diventa rossa quando vuoi cancellare
+            fill: var(--app-danger); 
           }
         }
       }
@@ -461,8 +452,8 @@ body {
 
         .product-name-link {
           font-weight: 600;
-          color: $text-midnight; // Mantiene il colore Blu Notte
-          text-decoration: none; // Toglie la sottolineatura di default
+          color: $text-midnight; 
+          text-decoration: none; 
           max-width: 200px;
           white-space: nowrap;
           overflow: hidden;
@@ -470,7 +461,7 @@ body {
           display: block;
 
           &:hover {
-            text-decoration: underline; // Sottolineatura solo al passaggio del mouse
+            text-decoration: underline; 
             opacity: 0.8;
           }
         }
@@ -495,7 +486,7 @@ body {
       line-height: 1.5;
 
       strong {
-        color: var(--app-text-midnight); // Rende il "Nessun prodotto trovato" più visibile
+        color: var(--app-text-midnight); 
         font-style: normal;
       }
 
@@ -504,7 +495,6 @@ body {
       }
     }
 
-    /* --- STILE BOTTONE ELIMINA --- */
     .action-cell {
       text-align: center;
       width: 60px;
@@ -521,7 +511,6 @@ body {
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
-      cursor: pointer;
 
       svg {
         width: 18px;
@@ -536,7 +525,6 @@ body {
       }
     }
 
-    /* --- STILI VARIAZIONE PREZZO --- */
     .variation-cell {
       display: flex;
       align-items: center;
@@ -650,7 +638,6 @@ body {
     flex-direction: column; 
   }
 
-  // Comportamento specifico per filtri e ricerca su Mobile
   .data-section .table-header {
     flex-direction: column;
     align-items: flex-start;
@@ -661,12 +648,95 @@ body {
       flex-wrap: wrap; 
       
       .search-wrapper {
-        flex: 1; /* Il wrapper occupa tutto lo spazio libero */
+        flex: 1; 
         min-width: 150px;
         
         .search-input {
-          width: 100%; /* L'input si adatta al suo wrapper */
+          width: 100%; 
         }
+      }
+    }
+  }
+
+  // --- RESPONSIVE TABLE TO CARDS (Novità) ---
+  .data-section {
+    background-color: transparent; // Rimuoviamo il background solido per far staccare le card
+    border: none;
+    box-shadow: none;
+    
+    .table-responsive {
+      overflow-x: hidden; // Preveniamo scorrimenti accidentali
+    }
+
+    .products-table {
+      thead {
+        display: none; // Nascondiamo le vecchie intestazioni
+      }
+
+      tbody tr {
+        display: block;
+        margin-bottom: 1.5rem; // Spazio tra una card e l'altra
+        background-color: var(--app-white);
+        border: 1px solid var(--app-text-midnight);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(10, 17, 40, 0.1);
+        padding: 0.5rem 1rem;
+        
+        &:hover {
+          background-color: var(--app-white); // Annulliamo l'hover standard desktop
+        }
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between; // Etichetta a sx, Valore a dx
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--app-border-light);
+        text-align: right; // Il contenuto testuale andrà a dx
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        // Creazione dell'etichetta dinamica
+        &::before {
+          content: attr(data-label);
+          font-weight: 600;
+          font-size: 0.9rem;
+          color: var(--app-text-midnight);
+          margin-right: 1rem;
+          flex-shrink: 0;
+        }
+
+        // Adattamento Cella Prodotto
+        &.product-cell, .product-cell {
+          justify-content: flex-end; // Allinea img e titolo a destra
+          text-align: right;
+          width: 100%;
+          
+          .product-details {
+            align-items: flex-end;
+          }
+        }
+
+        // Gestione Stato Vuoto (Empty state non deve sembrare una riga dati)
+        &.empty-state {
+          display: block;
+          text-align: center;
+          padding: 2rem 1rem !important;
+          border: 1px dashed var(--app-border-light);
+          background-color: var(--app-white);
+          border-radius: 12px;
+          
+          &::before { content: none; } // Niente etichetta qui
+        }
+      }
+
+      // Sistemiamo la larghezza della colonna azioni per adattarla alla riga flex
+      .action-cell {
+        width: 100%;
+        text-align: right;
       }
     }
   }

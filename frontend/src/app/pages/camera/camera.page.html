@@ -47,7 +47,7 @@
 
     <section class="camera-section">
       
-      <div class="camera-card" *ngIf="step === 'scan'">
+      <div class="camera-card w-100" *ngIf="step === 'scan'">
         <button class="btn-scan" (click)="startScan()">
           <svg viewBox="0 0 24 24"><path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/></svg>
           Inquadra Codice a Barre
@@ -67,12 +67,12 @@
       <ion-card *ngIf="step === 'found'" class="custom-card w-100">
         <img [src]="scannedProduct.image" alt="Prodotto" class="product-img" />
         <ion-card-header>
-          <ion-card-subtitle style="color: var(--app-text-midnight);">{{ scannedProduct.brand }}</ion-card-subtitle>
-          <ion-card-title style="color: var(--app-accent-eggplant); font-weight: 900;">{{ scannedProduct.name }}</ion-card-title>
-          <p style="color: #777; font-size: 0.9rem;">EAN: {{ scannedProduct.barcode }}</p>
+          <ion-card-subtitle class="product-subtitle">{{ scannedProduct.brand }}</ion-card-subtitle>
+          <ion-card-title class="product-title">{{ scannedProduct.name }}</ion-card-title>
+          <p class="product-ean">EAN: {{ scannedProduct.barcode }}</p>
         </ion-card-header>
         <ion-card-content>
-          <button class="btn-scan" (click)="goToPrice()">
+          <button class="btn-scan btn-forward" (click)="goToPrice()">
             Questo è il mio prodotto
             <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
           </button>
@@ -81,26 +81,27 @@
 
       <ion-card *ngIf="step === 'price'" class="custom-card w-100">
         <ion-card-header>
-          <ion-card-title style="color: var(--app-text-midnight); text-align: center;">Prezzo in negozio</ion-card-title>
+          <ion-card-title class="step-title">Prezzo in negozio</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <div class="manual-input-wrapper">
+          <div class="manual-input-wrapper price-input-wrapper">
             <label>A quanto lo vendono?</label>
             <div class="input-group">
-              <input type="number" placeholder="Es: 499.99" [(ngModel)]="scannedProduct.price" style="font-size: 1.2rem; text-align: center;">
+              <input type="number" placeholder="Es: 499.99" [(ngModel)]="scannedProduct.price" class="price-input">
             </div>
           </div>
-          <button class="btn-scan" style="margin-top: 20px;" (click)="goToStoreSelection()">
+          <button class="btn-scan btn-forward" (click)="goToStoreSelection()">
             Avanti
           </button>
         </ion-card-content>
       </ion-card>
 
-      <div *ngIf="step === 'store'" class="store-step w-100">
-        <h2 style="color: var(--app-text-midnight); font-weight: bold; margin-bottom: 1rem;">Dove ti trovi?</h2>
-        
-        <div class="manual-input-wrapper">
-          <input type="text" placeholder="Filtra negozi vicini..." (input)="filterStores($event)" class="search-input">
+      <div *ngIf="step === 'store'" class="store-step custom-card w-100">
+        <div class="store-header">
+          <h2 class="step-title">Dove ti trovi?</h2>
+          <div class="manual-input-wrapper">
+            <input type="text" placeholder="Filtra negozi vicini..." (input)="filterStores($event)" class="search-input">
+          </div>
         </div>
 
         <div *ngIf="isLoadingStores" class="loading-state">

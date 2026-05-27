@@ -31,7 +31,7 @@ export class ManageAccountPage implements OnInit {
   newPasswordError = '';
   unreadCount: number = 0;
   
-  private apiUrl = 'http://localhost:3000/api/account'; 
+  private apiUrl = '/api/account'; 
 
   constructor(
     private fb: FormBuilder,
@@ -255,4 +255,4 @@ export class ManageAccountPage implements OnInit {
     const toast = await this.toastController.create({ message, duration: 3000, color, position: 'bottom' });
     await toast.present();
   }
-}  
+}

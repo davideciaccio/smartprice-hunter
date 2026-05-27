@@ -1,13 +1,8 @@
-<div class="dashboard-layout">
+<div class="dashboard-layout standalone-admin">
   
-  <div class="sidebar-overlay" [class.active]="isSidebarActive" (click)="closeSidebar()"></div>
-
   <main class="main-content">
     <header class="topbar">
       <div class="title-area">
-        <button type="button" class="mobile-menu-toggle" aria-label="Apri menu" (click)="toggleSidebar()">
-          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-        </button>
         <div class="title-text">
           <h1>Gestione Utenti</h1>
           <p>Pannello di amministrazione per il controllo degli iscritti.</p>
@@ -49,13 +44,13 @@
             </div>
           </div>
 
-          <div class="col-role">
+          <div class="col-role" data-label="Ruolo">
             <span class="badge" [class.badge-admin]="user.role === 'admin'">
               {{ user.role === 'admin' ? 'Amministratore' : 'Utente' }}
             </span>
           </div>
 
-          <div class="col-status">
+          <div class="col-status" data-label="Stato">
             <span class="badge" [class.badge-danger]="user.isBanned" [class.badge-success]="!user.isBanned">
               {{ user.isBanned ? 'Bannato' : 'Attivo' }}
             </span>

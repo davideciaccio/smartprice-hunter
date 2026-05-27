@@ -12,26 +12,43 @@ npm install
 
 ## 🚀 Avvio del Progetto
 
-Il progetto è suddiviso in **Backend** e **Frontend**. È necessario avviarli entrambi aprendo due terminali separati.
+Il progetto è suddiviso in **Backend** e **Frontend**. È necessario avviarli entrambi aprendo dei terminali separati.
 
-### 🔹 Backend
-Per avviare il server di sviluppo del backend, spostati nella cartella dedicata ed esegui il comando:
+🟢 Terminale 1: Il Backend
+Naviga nella cartella originale del backend e mantieni in vita il server e il database:
 
-1. Vai nella cartella: **cd backend**
-2. Comando di avvio: 
-```bash 
-npm run dev 
+``` bash
+npm run dev
 ```
 
-### 🔹 Frontend
-Per avviare l'interfaccia utente con Ionic, spostati nella cartella dedicata ed esegui il comando:
+🔵 Terminale 2: Il Frontend
+Naviga nella cartella frontend 
+1. Vai nella cartella: **cd frontend**.
+(Nota: se è la primissima volta che apri la cartella, esegui prima npm install per ripristinare i moduli).
 
-1. Vai nella cartella: **cd frontend**
-2. Comando di avvio: 
-```bash
- ionic serve
+Avvia l'app in modalità sviluppo:
+
+
+``` bash
+ionic serve
 ```
 
----
 
-**Nota:** Assicurati di aver installato la **Ionic CLI** globalmente se il comando "ionic" non dovesse venire riconosciuto dal tuo sistema. Assicurati anche di aver installato globalmente Node.js se il comando "npm" non viene riconosciuto.
+(Attendi che l'app sia compilata e in ascolto sulla porta 8100).
+
+🟣 Terminale 3: Il Tunnel Ngrok
+Apri un terzo terminale (sempre dentro frontend-mobile-test) e genera il link HTTPS pubblico:
+
+
+``` bash
+npx ngrok http 8100
+```
+
+📱 FASE 4: Test su Smartphone
+Guarda l'output del Terminale 3 e copia l'URL generato alla riga Forwarding (es. https://abc-123.ngrok-free.app).
+
+Prendi il tuo iPhone/Android, apri Safari/Chrome e digita quell'URL.
+
+Se appare la schermata di benvenuto di Ngrok, clicca su "Visit Site".
+
+💡 Pro Tip per un test 100% realistico: Clicca sul tasto "Condividi" di Safari (o le impostazioni di Chrome) e seleziona "Aggiungi alla schermata Home". L'app si aprirà a schermo intero senza barre di navigazione, sbloccando la vera e propria esperienza PWA (Progressive Web App)!

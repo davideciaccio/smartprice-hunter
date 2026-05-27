@@ -83,7 +83,7 @@ export class CameraPage implements OnInit {
     try {
       this.showToast('Ricerca prodotto...', 'medium');
 
-      const apiUrl = `http://localhost:3000/api/scanned/lookup/${barcode}`;
+      const apiUrl = `/api/scanned/lookup/${barcode}`;
       const response: any = await lastValueFrom(this.http.get(apiUrl));
 
       // CASO A: Il backend ha trovato il prodotto nel TUO database
@@ -209,7 +209,7 @@ export class CameraPage implements OnInit {
 
     try {
       // Invia il prodotto al backend (la rotta che abbiamo creato prima!)
-      await lastValueFrom(this.http.post('http://localhost:3000/api/scanned/save', this.scannedProduct, { headers }));
+      await lastValueFrom(this.http.post('/api/scanned/save', this.scannedProduct, { headers }));
       
       this.showToast('Prodotto salvato con successo!', 'success');
       

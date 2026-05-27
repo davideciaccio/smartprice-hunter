@@ -73,7 +73,7 @@
               </td>
             </tr>
             <tr *ngFor="let product of products">
-              <td class="col-info">
+              <td class="col-info" data-label="Prodotto">
                 <div class="product-cell">
                   <img *ngIf="product.image" [src]="product.image" alt="Prodotto" class="product-thumb">
                   <div *ngIf="!product.image" class="product-thumb-placeholder">IMG</div>
@@ -84,7 +84,7 @@
                   </div>
                 </div>
               </td>
-              <td class="col-chart">
+              <td class="col-chart" data-label="Andamento prezzo">
                 <div class="chart-container" (click)="openChartModal(product)" title="Espandi grafico">
                   <canvas [id]="'chart-' + product._id"></canvas>
                 </div>

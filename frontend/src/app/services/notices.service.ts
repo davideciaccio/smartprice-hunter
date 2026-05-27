@@ -5,7 +5,7 @@ import { AuthService } from './auth'
 
 @Injectable({ providedIn: 'root' })
 export class NoticeService {
-  private apiUrl = 'http://localhost:3000/api/notices';
+  private apiUrl = '/api/notices';
 
   // === IL CUORE DEL BOLLINO DINAMICO ===
   // Inizializziamo a 0. Ogni componente che si "iscriverà" a unreadCount$ 

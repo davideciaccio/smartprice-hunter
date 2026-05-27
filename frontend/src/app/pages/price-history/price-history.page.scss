@@ -75,7 +75,7 @@ body {
 /* === MAIN CONTENT === */
 .main-content {
   flex: 1; padding: 2rem; overflow-y: auto;
-  background-color: $white; // Sfondo forzato a bianco
+  background-color: $white; 
 }
 
 .topbar {
@@ -111,55 +111,13 @@ body {
   &.active { display: block; opacity: 1; }
 }
 
-/* === RESPONSIVE (TABLET E MOBILE) === */
-@media (max-width: 768px) {
-  .topbar {
-    .title-area { display: flex; align-items: center; gap: 0.5rem; }
-    .mobile-menu-toggle { display: block; }
-  }
 
-  .sidebar {
-    position: fixed !important; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
-    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    &.active { transform: translateX(0) !important; }
-  }
-
-  .main-content { padding: 1rem; }
-  
-  /* ==========================================
-     FIX: DISPOSIZIONE IN COLONNA DELLA BARRA RICERCA
-     ========================================== */
-  .data-section .table-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    
-    .table-controls {
-      width: 100%;
-      flex-wrap: wrap; 
-      
-      .search-wrapper {
-        flex: 1; 
-        width: 100%;
-        
-        .search-input { 
-          width: 100%; 
-          min-width: 100%; /* Rimuove il limite dei 250px del desktop per adattarsi al telefono */
-        }
-      }
-    }
-  }
-}
-
-/* Aggiungi in fondo al file price-history.page.scss */
-
-/* === TABELLA E CONTENITORI (Stile Dashboard) === */
+/* === TABELLA E CONTENITORI === */
 .data-section {
   background-color: $white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(10, 17, 40, 0.05);
-  border: 1px solid $text-midnight; /* Bordo 1px Blu Notte */
+  border: 1px solid $text-midnight; 
   overflow: hidden;
 
   .table-header {
@@ -189,7 +147,7 @@ body {
 
   .search-input {
     padding: 0.5rem 2.5rem 0.5rem 2.2rem; 
-    border: 1px solid $text-midnight; /* Bordo 1px blu notte */
+    border: 1px solid $text-midnight; 
     border-radius: 6px; width: 100%; min-width: 250px;
     color: $text-midnight !important; 
     background-color: #FFFFFF !important; 
@@ -219,7 +177,7 @@ body {
     background-color: rgba(10, 17, 40, 0.04);
     color: $text-midnight;
     font-weight: 600;
-    border-bottom: 2px solid $text-midnight; /* Bordo separatore blu notte */
+    border-bottom: 2px solid $text-midnight; 
   }
 
   td {
@@ -249,7 +207,7 @@ body {
 
       .product-name-link {
         font-weight: 600;
-        color: $text-midnight; // Mantiene il colore Blu Notte
+        color: $text-midnight;
         text-decoration: none;
         display: block;
 
@@ -266,14 +224,13 @@ body {
     }
   }
 
-  /* Contenitore grafico in miniatura */
   .chart-container {
     width: 100%;
-    height: 80px; /* Altezza fissa per i mini grafici */
+    height: 80px; 
     cursor: pointer;
     position: relative;
     transition: transform 0.2s;
-    &:hover { transform: scale(1.02); } /* Piccolo effetto zoom al passaggio del mouse */
+    &:hover { transform: scale(1.02); }
   }
 
   .empty-state {
@@ -281,40 +238,7 @@ body {
   }
 }
 
-/* === STILI MODALE (Grafico Grande) === */
-.modal-header-custom {
-  ion-toolbar {
-    --background: $white;
-    --border-color: $text-midnight;
-    border-bottom: 1px solid $text-midnight;
-  }
-  .modal-title {
-    color: $text-midnight;
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-  .close-btn {
-    color: $text-midnight;
-    font-weight: 600;
-  }
-}
-
-.modal-content-custom {
-  --background: $white;
-  
-  .large-chart-container {
-    width: 100%;
-    height: 100%;
-    min-height: 400px;
-    padding: 1rem;
-  }
-}
-
-/* =====================================
-   STILI MODALE (Grafico Grande)
-   ===================================== */
-   
-/* Forza Ionic a non usare il tema scuro di sistema per questa modale */
+/* === STILI MODALE === */
 ion-modal {
   --border-radius: 16px; 
   --background: #ffffff !important;
@@ -330,7 +254,7 @@ ion-modal {
   }
   
   .modal-title {
-    color: var(--app-text-midnight) !important; /* Forza il testo a Blu Notte */
+    color: var(--app-text-midnight) !important; 
     font-weight: 700;
     font-size: 1.1rem;
   }
@@ -350,6 +274,114 @@ ion-modal {
     height: 100%;
     min-height: 400px;
     padding: 1rem;
-    background-color: #ffffff; /* Sfondo bianco dietro al canvas */
+    background-color: #ffffff; 
+  }
+}
+
+/* === RESPONSIVE (TABLET E MOBILE) === */
+@media (max-width: 768px) {
+  .topbar {
+    .title-area { display: flex; align-items: center; gap: 0.5rem; }
+    .mobile-menu-toggle { display: block; }
+  }
+
+  .sidebar {
+    position: fixed !important; top: 0; left: 0; width: 250px; height: 100vh; z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    &.active { transform: translateX(0) !important; }
+  }
+
+  .main-content { padding: 1rem; }
+  
+  .data-section .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    .table-controls {
+      width: 100%;
+      flex-wrap: wrap; 
+      
+      .search-wrapper {
+        flex: 1; 
+        width: 100%;
+        
+        .search-input { 
+          width: 100%; 
+          min-width: 100%; 
+        }
+      }
+    }
+  }
+
+  /* --- RESPONSIVE TABLE TO CARDS --- */
+  .data-section {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    .table-responsive {
+      overflow-x: hidden; /* Elimina lo scroll orizzontale */
+    }
+
+    .history-table {
+      thead {
+        display: none; /* Nascondiamo le vecchie intestazioni */
+      }
+
+      tbody tr {
+        display: flex;
+        flex-direction: column; /* Impila gli elementi verticalmente */
+        margin-bottom: 1.5rem;
+        background-color: var(--app-white);
+        border: 1px solid var(--app-text-midnight);
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(10, 17, 40, 0.1);
+        padding: 1rem;
+        
+        &:hover {
+          background-color: var(--app-white);
+        }
+      }
+
+      td {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0;
+        border-bottom: none;
+
+        /* Separatore tra Info Prodotto e Grafico */
+        &:first-child {
+          border-bottom: 1px dashed var(--app-border-light);
+          padding-bottom: 1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        /* Generazione dinamica dell'etichetta */
+        &::before {
+          content: attr(data-label);
+          font-weight: 600;
+          font-size: 0.85rem;
+          color: rgba(10, 17, 40, 0.6);
+          display: block;
+          margin-bottom: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        &.empty-state {
+          border: 1px dashed var(--app-border-light);
+          text-align: center;
+          padding: 2rem !important;
+          &::before { content: none; }
+        }
+      }
+
+      .chart-container {
+        /* Aumentiamo leggermente l'altezza su mobile per renderlo più leggibile e facile da tappare */
+        height: 120px; 
+      }
+    }
   }
 }

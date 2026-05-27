@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductService {
   // L'indirizzo del nostro backend Node.js
-  private apiUrl = 'http://localhost:3000/api/products';
+  private apiUrl = '/api/products';
 
   constructor(private http: HttpClient) { }
 
@@ -35,7 +35,7 @@ export class ProductService {
 
   // 3. Chiamata DELETE per rimuovere un prodotto dal DB
   deleteProduct(productId: string): Observable<any> {
-    // La chiamata andrà verso: http://localhost:3000/api/products/{ID_DEL_PRODOTTO}
+    // La chiamata andrà verso: /api/products/{ID_DEL_PRODOTTO}
     return this.http.delete(`${this.apiUrl}/${productId}`, { headers: this.getHeaders() });
   }
 }

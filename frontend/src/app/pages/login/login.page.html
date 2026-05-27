@@ -1,27 +1,22 @@
 <ion-content class="x-theme-content">
-  <!-- Wrapper principale: spinge il footer in basso se la pagina è corta -->
   <div class="x-layout-wrapper">
     
     <div class="x-container">
-      <!-- LATO SINISTRO: Logo Immagine -->
       <div class="x-logo-section">
         <img src="assets/logo.png" alt="SmartPrice Hunter Logo" class="massive-logo-img" />
       </div>
 
-      <!-- LATO DESTRO: Form e bottoni -->
       <div class="x-action-section">
         <h1 class="main-heading">Scegli. Confronta. Acquista.</h1>
         <h3 class="sub-heading">Unisciti alla community di SmartPrice Hunter adesso.</h3>
 
         <div class="auth-wrapper">
           
-          <!-- Pulsante Google -->
           <ion-button expand="block" class="x-btn-white x-pill" mode="md">
             <img slot="start" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="oauth-icon" alt="Google Logo" />
             Registrati con Google
           </ion-button>
           
-          <!-- Pulsante Apple -->
           <ion-button expand="block" class="x-btn-white x-pill mb-3" mode="md">
             <ion-icon 
               slot="start" 
@@ -31,17 +26,14 @@
             Iscriviti con Apple
           </ion-button>
 
-          <!-- Divisore con la "O" -->
           <div class="divider">
             <span>O</span>
           </div>
 
-          <!-- Pulsante Crea account -->
           <ion-button expand="block" class="x-btn-white x-pill mb-5" mode="md" (click)="goToRegister()">
             Crea account
           </ion-button>
 
-          <!-- Sezione Login -->
           <div class="login-container">
             <h3 class="login-heading">Hai già un account?</h3>
 
@@ -64,7 +56,6 @@
                 [(ngModel)]="credentials.password">
               </ion-input>
 
-              <!-- Bottone Accedi con i nuovi colori -->
               <ion-button expand="block" class="x-btn-primary x-pill mt-4" mode="md" (click)="onLogin()">
                 Accedi
               </ion-button>
@@ -74,7 +65,6 @@
       </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="x-footer">
       <nav>
         <span>© 2026 SmartPrice Hunter</span>
