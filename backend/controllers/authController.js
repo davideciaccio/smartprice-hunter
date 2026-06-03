@@ -105,28 +105,6 @@ const login = async (req, res) => {
   }
 };
 
-// --- 3. CONTROLLER DI ELIMINAZIONE ACCOUNT ---
-const deleteAccount = async (req, res) => {
-    try {
-        // L'ID dell'utente ci viene fornito dal nostro authMiddleware
-        const userId = req.user.userId;
-
-        // 1. Eliminiamo TUTTI i prodotti associati a questo utente
-        await Product.deleteMany({ user: userId });
-
-        // 2. Eliminiamo l'utente stesso
-        const deletedUser = await User.findByIdAndDelete(userId);
-
-        if (!deletedUser) {
-            return res.status(404).json({ message: "Utente non trovato." });
-        }
-
-        res.status(200).json({ message: "Account e dati associati eliminati con successo." });
-    } catch (error) {
-        console.error("Errore durante l'eliminazione dell'account:", error);
-        res.status(500).json({ message: "Errore interno del server durante l'eliminazione." });
-    }
-};
 
 // Esportiamo le funzioni per poterle usare nel file delle rotte
-module.exports = { register, login, deleteAccount };
+module.exports = { register, login };
