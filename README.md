@@ -51,4 +51,10 @@ Prendi il tuo iPhone/Android, apri Safari/Chrome e digita quell'URL.
 
 Se appare la schermata di benvenuto di Ngrok, clicca su "Visit Site".
 
+## ⛃ Database
 
+Per il Database è necessario aver installato MongoDB Compass (GUI) da questo link "https://www.mongodb.com/try/download/compass",
+
+accedere alla GUI e aver creato un database chiamato "smartprice_hunter".
+
+![alt text](frontend/src/assets/image.png)
