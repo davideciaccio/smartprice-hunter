@@ -37,7 +37,7 @@ ionic serve
 (Attendi che l'app sia compilata e in ascolto sulla porta 8100).
 
 🟣 Terminale 3: Il Tunnel Ngrok
-Apri un terzo terminale (sempre dentro frontend-mobile-test) e genera il link HTTPS pubblico:
+Apri un terzo terminale (sempre dentro frontend) e genera il link HTTP pubblico:
 
 
 ``` bash
@@ -51,4 +51,4 @@ Prendi il tuo iPhone/Android, apri Safari/Chrome e digita quell'URL.
 
 Se appare la schermata di benvenuto di Ngrok, clicca su "Visit Site".
 
-💡 Pro Tip per un test 100% realistico: Clicca sul tasto "Condividi" di Safari (o le impostazioni di Chrome) e seleziona "Aggiungi alla schermata Home". L'app si aprirà a schermo intero senza barre di navigazione, sbloccando la vera e propria esperienza PWA (Progressive Web App)!
+

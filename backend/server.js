@@ -13,7 +13,7 @@ const swaggerUi = require('swagger-ui-express');
 // ==========================================
 // 2. IMPORT DELLE ROTTE E JOB INTERNI
 // ==========================================
-const startPriceMonitor = require('./jobs/priceMonitor'); // Il cron job che gira in background
+const startPriceMonitor = require('./jobs/priceMonitor'); // Il cron job che gira in background ogni 10 minuti
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const accountRoutes = require('./routes/account');

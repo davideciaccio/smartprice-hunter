@@ -8,7 +8,7 @@ const { runScrapingEngine } = require('../controllers/scraperController');
 const startPriceMonitor = () => {
     // Sintassi Cron: '*/5 * * * *' => Esegui ogni 5 minuti
     // Sintassi Cron: '0 */3 * * *' => Esegui ogni 3 ore
-    cron.schedule('0 */3 * * *', async () => {
+    cron.schedule('*/10 * * * *', async () => {
         console.log('[CRON JOB] Avvio controllo prezzi in background...');
 
         try {
