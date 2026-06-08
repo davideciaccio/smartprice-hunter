@@ -85,7 +85,7 @@ const login = async (req, res) => {
       È una lunghissima stringa incomprensibile salvata in un file nascosto (.env) nel tuo server. 
       Il server usa questo segreto per creare una "Firma Elettronica" sul badge. 
       Se l'utente proverà a modificare il suo ID nel token per fingersi qualcun altro, la firma si romperà e il server lo respingerà.
-    * ExpiresIn: Il badge si autodistruggerà tra 1 ora (1h).
+    * ExpiresIn: Il badge si autodistruggerà tra 24 ora (24h).
       Questo limita i danni nel caso in cui qualcuno rubi il token all'utente.
     */
     const token = jwt.sign(
