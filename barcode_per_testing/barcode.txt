@@ -17,5 +17,5 @@ Per l'inserimento manuale
 195950851809
 0195950626209
 
-NB: per trovare i barcode di questi prodotti basta cercarli su https://www.upcitemdb.com
-in modo da poterli scansionare con la fotocamera.
+NB: per trovare i barcode di questi prodotti basta copiare il barcode e inserirlo su https://www.upcitemdb.com 
+in modo da poterli scansionare con la fotocamera del telefono.

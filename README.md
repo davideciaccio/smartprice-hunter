@@ -62,4 +62,6 @@ accedere alla GUI e aver creato un database chiamato "smartprice_hunter" per ess
 
 ---
 
-Ho aggiunto una cartella barcode, per fare la prova della funzionalità di scansione dell'applicazione. All'interno ci sono sia i barcode da inserire manualmente per desktop, sia i barcode in png da scansionare con la fotocamera del telefono.
+Ho aggiunto una cartella barcode, per permettere il test della funzionalità di scansione dell'applicazione. All'interno del file barcode.txt ci sono i barcode da inserire manualmente per desktop.
+
+Se si vuole provare la funzionalità di scansione con la fotocamera da mobile c'è sempre scritto come fare sempre dentro barcode.txt
